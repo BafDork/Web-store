@@ -6,13 +6,14 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     container_name: web-store-backend
+    secrets:
+      - jwt_secret
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/webstore
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: password
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
-      JWT_SECRET: your_very_secret_key_here_which_should_be_at_least_32_characters_long
-      EXPIRATION_TIME: 3600000
+      JWT_SECRET: /run/secrets/jwt_secret 
     ports:
       - "8080:8080"
     depends_on:

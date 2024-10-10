@@ -26,14 +26,14 @@
     methods: {
       ...mapActions(['login']),
       login() {
-        axios.post('/api/auth/login', { email: this.email, password: this.password })
-          .then(response => {
-            this.login(response.data.user);
-            this.$router.push('/');
-          })
-          .catch(error => {
-            alert('Ошибка авторизации');
-          });
+        // axios.post('/api/auth/login', { email: this.email, password: this.password })
+        //   .then(response => {
+        //     this.login(response.data.user);
+        //     this.$router.push('/');
+        //   })
+        //   .catch(error => {
+        //     alert('Ошибка авторизации');
+        //   });
       }
     }
   };

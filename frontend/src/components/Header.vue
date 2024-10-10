@@ -7,7 +7,7 @@
         <button v-if="isAuthenticated" @click="logout">Выйти</button>
       </nav>
     </header>
-  </template>
+</template>
   
   <script>
   import { mapGetters, mapActions } from 'vuex';

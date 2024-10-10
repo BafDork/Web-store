@@ -1,9 +1,6 @@
-import Vue from 'vue';
-import Vuex from 'vuex';
+import { createStore } from 'vuex';
 
-Vue.use(Vuex);
-
-export default new Vuex.Store({
+export default createStore({
   state: {
     user: null,
     cart: []
@@ -36,5 +33,6 @@ export default new Vuex.Store({
     cartCount: state => state.cart.length,
     cartTotal: state => state.cart.reduce((total, product) => total + product.price, 0)
   },
-  modules: {}
+  modules: {
+  }
 });

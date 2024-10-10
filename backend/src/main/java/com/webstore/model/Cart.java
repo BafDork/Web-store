@@ -1,8 +1,12 @@
 package com.webstore.model;
 
+import lombok.Getter;
+
 import java.util.HashMap;
 import java.util.Map;
 
+@Getter
+@SuppressWarnings("FieldMayBeFinal")
 public class Cart {
 
     private Long userId;
@@ -10,14 +14,6 @@ public class Cart {
 
     public Cart(Long userId) {
         this.userId = userId;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public Map<Product, Integer> getProducts() {
-        return products;
     }
 
     public void addProduct(Product product, int quantity) {

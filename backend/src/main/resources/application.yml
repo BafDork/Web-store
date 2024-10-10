@@ -9,4 +9,3 @@ spring:
 
 jwt:
   secret: ${JWT_SECRET}
-  expiration-time: ${EXPIRATION_TIME}

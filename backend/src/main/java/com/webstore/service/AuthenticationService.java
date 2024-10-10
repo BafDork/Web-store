@@ -7,14 +7,14 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.webstore.dto.JwtAuthenticationResponse;
-import com.webstore.dto.LoginRequest;
-import com.webstore.dto.RegisterRequest;
+import com.webstore.dto.SignInRequest;
+import com.webstore.dto.SignUpRequest;
 import com.webstore.model.Role;
 import com.webstore.model.User;
 
 @Service
 @RequiredArgsConstructor
-public class AuthService {
+public class AuthenticationService {
     private final UserService userService;
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
@@ -26,7 +26,7 @@ public class AuthService {
      * @param request данные пользователя
      * @return токен
      */
-    public JwtAuthenticationResponse signUp(RegisterRequest request) {
+    public JwtAuthenticationResponse signUp(SignUpRequest request) {
 
         var user = User.builder()
                 .username(request.getUsername())
@@ -47,7 +47,7 @@ public class AuthService {
      * @param request данные пользователя
      * @return токен
      */
-    public JwtAuthenticationResponse signIn(LoginRequest request) {
+    public JwtAuthenticationResponse signIn(SignInRequest request) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 request.getUsername(),
                 request.getPassword()

@@ -5,10 +5,10 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class AuthResponse {
+public class AuthenticationResponse {
     private String token;
 
-    public AuthResponse(String token) {
+    public AuthenticationResponse(String token) {
         this.token = token;
     }
 }

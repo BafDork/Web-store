@@ -29,19 +29,19 @@
     },
     methods: {
       register() {
-        axios.post('/api/auth/register', {
-          firstName: this.firstName,
-          lastName: this.lastName,
-          email: this.email,
-          password: this.password
-        })
-        .then(() => {
-          alert('Успешная регистрация');
-          this.$router.push('/login');
-        })
-        .catch(() => {
-          alert('Ошибка регистрации');
-        });
+        // axios.post('/api/auth/register', {
+        //   firstName: this.firstName,
+        //   lastName: this.lastName,
+        //   email: this.email,
+        //   password: this.password
+        // })
+        // .then(() => {
+        //   alert('Успешная регистрация');
+        //   this.$router.push('/login');
+        // })
+        // .catch(() => {
+        //   alert('Ошибка регистрации');
+        // });
       }
     }
   };
