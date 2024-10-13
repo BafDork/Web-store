@@ -1,4 +1,4 @@
-package com.webstore.repository;
-
-public interface OrderRepository {
-}
+//package com.webstore.repository;
+//
+//public interface OrderRepository {
+//}

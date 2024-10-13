@@ -1,4 +1,4 @@
-package com.webstore.repository;
-
-public interface CategoryRepository {
-}
+//package com.webstore.repository;
+//
+//public interface CategoryRepository {
+//}

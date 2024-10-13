@@ -26,4 +26,4 @@ COPY --from=builder /app/target/web-store-1.0-SNAPSHOT.jar ./web-store-1.0-SNAPS
 EXPOSE 8080
 
 # Command to run the application
-ENTRYPOINT ["java", "-jar", "web-store.jar"]
+ENTRYPOINT ["java", "-jar", "web-store-1.0-SNAPSHOT.jar"]

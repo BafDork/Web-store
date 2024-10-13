@@ -33,11 +33,11 @@ public class UserService {
      */
     public User create(User user) {
         if (repository.existsByUsername(user.getUsername())) {
-            throw new IllegalArgumentException("Пользователь с таким именем уже существует");
+            throw new IllegalArgumentException("A user with that name already exists");
         }
 
         if (repository.existsByEmail(user.getEmail())) {
-            throw new IllegalArgumentException("Пользователь с таким email уже существует");
+            throw new IllegalArgumentException("A user with this email already exists");
         }
 
         return save(user);
@@ -50,7 +50,18 @@ public class UserService {
      */
     public User getByUsername(String username) {
         return repository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
+                .orElseThrow(() -> new UsernameNotFoundException("The user was not found"));
+
+    }
+
+
+    /**
+     * Удаление пользователя по имени пользователя
+     *
+     */
+    public void deleteByUsername(String username) {
+        User user = getByUsername(username);
+        repository.delete(user);
 
     }
 
