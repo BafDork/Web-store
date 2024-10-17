@@ -1,9 +1,11 @@
 package com.webstore.service;
 
 
+import com.webstore.exceptions.InvalidTokenException;
 import com.webstore.model.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,8 +33,13 @@ public class JwtService {
      * @return имя пользователя
      */
     public String extractUserName(String token) {
-        return extractAllClaims(token).getSubject();
+        try {
+            return extractAllClaims(token).getSubject();
+        } catch (MalformedJwtException e) {
+            throw new InvalidTokenException("Invalid token: " + token);
+        }
     }
+
 
     /**
      * Генерация токена

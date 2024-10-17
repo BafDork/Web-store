@@ -1,5 +1,6 @@
 package com.webstore.service;
 
+import com.webstore.exceptions.UserAlreadyExistsException;
 import com.webstore.model.Role;
 import com.webstore.model.User;
 import com.webstore.repository.UserRepository;
@@ -33,11 +34,11 @@ public class UserService {
      */
     public User create(User user) {
         if (repository.existsByUsername(user.getUsername())) {
-            throw new IllegalArgumentException("A user with that name already exists");
+            throw new UserAlreadyExistsException("User with name " + user.getUsername() + " already exist");
         }
 
         if (repository.existsByEmail(user.getEmail())) {
-            throw new IllegalArgumentException("A user with this email already exists");
+            throw new UserAlreadyExistsException("User with email " + user.getEmail() + " already exist");
         }
 
         return save(user);

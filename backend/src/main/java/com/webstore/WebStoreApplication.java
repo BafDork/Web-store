@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 
 @SpringBootApplication
-@EnableJpaRepositories(basePackages = "com.webstore.repository")
+@EnableJpaRepositories
 public class WebStoreApplication {
     public static void main(String[] args) {
         SpringApplication.run(WebStoreApplication.class, args);
