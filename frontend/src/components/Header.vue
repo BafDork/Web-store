@@ -2,7 +2,7 @@
     <header>
       <nav>
         <router-link to="/">Каталог</router-link>
-        <router-link v-if="!isAuthenticated" to="/login">Войти</router-link>
+        <router-link v-if="!isAuthenticated" to="/auth/sing-in">Войти</router-link>
         <router-link v-if="isAuthenticated" to="/cart">Корзина ({{ cartCount }})</router-link>
         <button v-if="isAuthenticated" @click="logout">Выйти</button>
       </nav>

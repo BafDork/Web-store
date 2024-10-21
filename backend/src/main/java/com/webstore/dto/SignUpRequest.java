@@ -22,6 +22,6 @@ public class SignUpRequest {
     @Email(message = "Email адрес должен быть в формате user@example.com")
     private String email;
 
-    @Size(max = 255, message = "Длина пароля должна быть не более 255 символов")
+    @Size(min = 8, max = 255, message = "Длина пароля должен содержать от 8 до 255 символов")
     private String password;
 }

@@ -8,7 +8,7 @@
         <input type="password" v-model="password" required />
         <button type="submit">Войти</button>
       </form>
-      <router-link to="/register">Зарегистрироваться</router-link>
+      <router-link to="/auth/sing-up">Зарегистрироваться</router-link>
     </div>
   </template>
   
@@ -26,14 +26,14 @@
     methods: {
       ...mapActions(['login']),
       login() {
-        // axios.post('/api/auth/login', { email: this.email, password: this.password })
-        //   .then(response => {
-        //     this.login(response.data.user);
-        //     this.$router.push('/');
-        //   })
-        //   .catch(error => {
-        //     alert('Ошибка авторизации');
-        //   });
+        axios.post('http://backend:8080/auth/sign-in', { email: this.email, password: this.password })
+          .then(response => {
+            this.login(response.data.user);
+            this.$router.push('/');
+          })
+          .catch(error => {
+            alert('Ошибка авторизации');
+          });
       }
     }
   };

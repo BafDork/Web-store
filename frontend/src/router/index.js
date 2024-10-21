@@ -1,12 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import ProductList from '@/views/ProductList.vue';
-import Login from '@/views/Login.vue';
-import Register from '@/views/Register.vue';
+import SingIn from '@/views/SingIn.vue';
+import SingUp from '@/views/SingUp.vue';
 
 const routes = [
   { path: '/', name: 'Home', component: ProductList },
-  { path: '/login', name: 'Login', component: Login },
-  { path: '/register', name: 'Register', component: Register },
+  { path: '/auth/sing-in', name: 'SingIn', component: SingIn },
+  { path: '/auth/sing-up', name: 'SingUp', component: SingUp },
 ];
 
 const router = createRouter({

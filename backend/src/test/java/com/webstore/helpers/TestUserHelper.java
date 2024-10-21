@@ -7,9 +7,13 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.var;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+
+import java.util.Collections;
 
 @Component
 @RequiredArgsConstructor
@@ -27,6 +31,14 @@ public class TestUserHelper {
     private final String email = "test_user@mail.com";
     @Getter
     private final String password = "password123";
+
+    public UserDetails createMockUser(Role role) {
+        return new org.springframework.security.core.userdetails.User(
+                username,
+                passwordEncoder.encode(password),
+                Collections.singletonList(new SimpleGrantedAuthority(role.name()))
+        );
+    }
 
     public boolean isUserExists() {
         try {

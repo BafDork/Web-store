@@ -4,8 +4,6 @@ import com.webstore.helpers.TestUserHelper;
 import com.webstore.model.Role;
 import com.webstore.service.JwtService;
 import com.webstore.service.UserService;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -32,18 +30,10 @@ public class AuthorizationTests {
     @Autowired
     private TestUserHelper testUserHelper;
 
-    @BeforeEach
-    public void setUp() {
-        testUserHelper.createUserIfNotExists(Role.ROLE_USER);
-    }
-
-    @AfterEach
-    public void tearDown() {
-        testUserHelper.deleteUserIfExists();
-    }
-
     @Test
     public void testAccessProtectedEndpointWithValidToken() throws Exception {
+        testUserHelper.createUserIfNotExists(Role.ROLE_USER);
+
         UserDetails userDetails = userService
                 .userDetailsService()
                 .loadUserByUsername(testUserHelper.getUsername());
@@ -52,6 +42,8 @@ public class AuthorizationTests {
         mockMvc.perform(get("/protected-endpoint")
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk());
+
+        testUserHelper.deleteUserIfExists();
     }
 
     @Test
