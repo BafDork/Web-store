@@ -1,31 +1,34 @@
-# Dockerfile for frontend (Vue.js)
+# Dockerfile для фронтенда (Vue.js)
 
-# Step 1: Build the Vue.js application
+# Шаг 1: Сборка приложения Vue.js
 FROM node:18 AS builder
 
-# Set the working directory
+# Устанавливаем рабочую директорию
 WORKDIR /app
 
-# Copy package.json and package-lock.json to install dependencies
+# Копируем package.json и package-lock.json для установки зависимостей
 COPY package*.json ./
 
-# Install dependencies
+# Устанавливаем зависимости
 RUN npm install
 
-# Copy the rest of the application source code
+# Копируем остальной исходный код приложения
 COPY . .
 
-# Build the frontend
+# Собираем фронтенд
 RUN npm run build
 
-# Step 2: Serve the built frontend using Nginx
+# Шаг 2: Обслуживание собранного фронтенда с помощью Nginx
 FROM nginx:alpine
 
-# Copy the built Vue.js files to Nginx's serving directory
+# Копируем собранные файлы Vue.js в директорию Nginx для обслуживания
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Expose the default Nginx port
+# Копируем конфигурационный файл Nginx
+COPY ./nginx.conf /etc/nginx/conf.d/default.conf
+
+# Открываем стандартный порт Nginx
 EXPOSE 80
 
-# Command to run Nginx
+# Команда для запуска Nginx
 CMD ["nginx", "-g", "daemon off;"]

@@ -26,7 +26,7 @@
     methods: {
       ...mapActions(['login']),
       login() {
-        axios.post('http://backend:8080/auth/sign-in', { email: this.email, password: this.password })
+        axios.post('http://localhost:8080/auth/sign-in', { email: this.email, password: this.password })
           .then(response => {
             this.login(response.data.user);
             this.$router.push('/');

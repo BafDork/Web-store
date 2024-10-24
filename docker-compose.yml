@@ -16,6 +16,8 @@ services:
     container_name: web-store-frontend
     ports:
       - "80:80"
+    volumes:
+      - ./frontend/src/resources/images:/usr/src/app/images 
     depends_on:
       - backend
 
@@ -30,6 +32,7 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./backend/sql/init.sql:/docker-entrypoint-initdb.d/init.sql
 
 volumes:
   postgres_data:

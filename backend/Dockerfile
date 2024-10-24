@@ -1,29 +1,29 @@
-# Dockerfile for backend (Spring Boot)
+# Dockerfile для бэкенда (Spring Boot)
 
-# Step 1: Build the application using Maven
+# Шаг 1: Собрать приложение с помощью Maven
 FROM maven:3.8.4-openjdk-8 AS builder
 
-# Set the working directory
+# Установить рабочую директорию
 WORKDIR /app
 
-# Copy pom.xml and source code to the working directory
+# Скопировать pom.xml и исходный код в рабочую директорию
 COPY pom.xml .
 COPY src ./src
 
-# Build the application
+# Собрать приложение
 RUN mvn clean package -DskipTests
 
-# Step 2: Create a minimal Docker image to run the built Spring Boot application
+# Шаг 2: Создать минимальный Docker-образ для запуска собранного приложения Spring Boot
 FROM openjdk:17-jdk-slim
 
-# Set the working directory in the new container
+# Установить рабочую директорию в новом контейнере
 WORKDIR /app
 
-# Copy the built JAR file from the builder stage
+# Скопировать собранный JAR-файл из стадии сборки
 COPY --from=builder /app/target/web-store-1.0-SNAPSHOT.jar ./web-store-1.0-SNAPSHOT.jar
 
-# Expose the application port (adjust according to your configuration)
+# Открыть порт приложения (при необходимости настройте в соответствии с вашей конфигурацией)
 EXPOSE 8080
 
-# Command to run the application
+# Команда для запуска приложения
 ENTRYPOINT ["java", "-jar", "web-store-1.0-SNAPSHOT.jar"]
