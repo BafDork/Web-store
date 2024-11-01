@@ -1,9 +1,10 @@
 -- Создание таблицы пользователей
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
-    username VARCHAR(255) UNIQUE NOT NULL,
-    password VARCHAR(255) NOT NULL,
+    first_name VARCHAR(255) NOT NULL,
+    last_name VARCHAR(255) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
     role VARCHAR(50) NOT NULL
 );
 
@@ -58,9 +59,9 @@ CREATE TABLE cart_item_quantities (
 );
 
 -- Вставка начальных данных в таблицу пользователей
-INSERT INTO users (username, password, email, role) VALUES
-('admin', 'adminpass', 'admin@mail.com', 'ROLE_ADMIN'),
-('user1', '12345678', 'user@mail.com', 'ROLE_USER');
+INSERT INTO users (first_name, last_name, email, password, role) VALUES
+('Admin', 'Adminov', 'admin@mail.com', 'adminpass', 'ROLE_ADMIN'),
+('User', 'Userov', 'user@mail.com', '12345678', 'ROLE_USER');
 
 -- Вставка начальных данных в таблицу категорий
 INSERT INTO categories (name, parent_id) VALUES

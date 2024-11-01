@@ -33,18 +33,26 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "username", unique = true, nullable = false)
-    private String username;
+    @Column(name = "first_name", nullable = false)
+    private String firstName;
 
-    @Column(name = "password", nullable = false)
-    private String password;
+    @Column(name = "last_name", nullable = false)
+    private String lastName;
 
     @Column(name = "email", unique = true, nullable = false)
     private String email;
 
+    @Column(name = "password", nullable = false)
+    private String password;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
     private Role role;
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

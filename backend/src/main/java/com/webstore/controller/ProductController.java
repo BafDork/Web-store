@@ -22,17 +22,15 @@ public class ProductController {
     private final ProductService productService;
 
     @GetMapping
-    public ResponseEntity<List<ProductDTO>> getAllProducts(
-            @RequestParam(defaultValue = "asc") String sort) {
-        List<ProductDTO> products = productService.findAllProducts(sort);
+    public ResponseEntity<List<ProductDTO>> getAllProducts() {
+        List<ProductDTO> products = productService.findAllProducts();
         return ResponseEntity.ok(products);
     }
 
     @GetMapping("/category/{categoryId}")
     public ResponseEntity<List<ProductDTO>> getProductsByCategory(
-            @PathVariable Long categoryId,
-            @RequestParam(defaultValue = "asc") String sort) {
-        List<ProductDTO> products = productService.findProductsByCategory(categoryId, sort);
+            @PathVariable Long categoryId) {
+        List<ProductDTO> products = productService.findProductsByCategory(categoryId);
         return ResponseEntity.ok(products);
     }
 }

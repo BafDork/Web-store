@@ -17,7 +17,7 @@ services:
     ports:
       - "80:80"
     volumes:
-      - ./frontend/src/resources/images:/usr/src/app/images 
+      - ./frontend/src/assets/images:/usr/src/app/images 
     depends_on:
       - backend
 

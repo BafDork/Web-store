@@ -1,7 +1,7 @@
 package com.webstore.service;
 
+import com.webstore.exceptions.ResourceNotFoundException;
 import com.webstore.exceptions.UserAlreadyExistsException;
-import com.webstore.model.Role;
 import com.webstore.model.User;
 import com.webstore.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +15,13 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class UserService {
-    private final UserRepository repository;
+
+    private final UserRepository userRepository;
+
+    public User getUserById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Пользователь не найден с ID: " + userId));
+    }
 
     /**
      * Сохранение пользователя
@@ -23,9 +29,8 @@ public class UserService {
      * @return сохраненный пользователь
      */
     public User save(User user) {
-        return repository.save(user);
+        return userRepository.save(user);
     }
-
 
     /**
      * Создание пользователя
@@ -33,37 +38,29 @@ public class UserService {
      * @return созданный пользователь
      */
     public User create(User user) {
-        if (repository.existsByUsername(user.getUsername())) {
-            throw new UserAlreadyExistsException("User with name " + user.getUsername() + " already exist");
+        if (userRepository.existsByEmail(user.getEmail())) {
+            throw new UserAlreadyExistsException("User with email " + user.getEmail() + " already exists");
         }
-
-        if (repository.existsByEmail(user.getEmail())) {
-            throw new UserAlreadyExistsException("User with email " + user.getEmail() + " already exist");
-        }
-
         return save(user);
     }
 
     /**
-     * Получение пользователя по имени пользователя
+     * Получение пользователя по электронной почте
      *
      * @return пользователь
      */
-    public User getByUsername(String username) {
-        return repository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("The user was not found"));
-
+    public User getByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден с email: " + email));
     }
 
-
     /**
-     * Удаление пользователя по имени пользователя
+     * Удаление пользователя по электронной почте
      *
      */
-    public void deleteByUsername(String username) {
-        User user = getByUsername(username);
-        repository.delete(user);
-
+    public void deleteByEmail(String email) {
+        User user = getByEmail(email);
+        userRepository.delete(user);
     }
 
     /**
@@ -74,7 +71,7 @@ public class UserService {
      * @return пользователь
      */
     public UserDetailsService userDetailsService() {
-        return this::getByUsername;
+        return this::getByEmail;  // Изменено на getByEmail
     }
 
     /**
@@ -83,21 +80,7 @@ public class UserService {
      * @return текущий пользователь
      */
     public User getCurrentUser() {
-        // Получение имени пользователя из контекста Spring Security
-        var username = SecurityContextHolder.getContext().getAuthentication().getName();
-        return getByUsername(username);
-    }
-
-
-    /**
-     * Выдача прав администратора текущему пользователю
-     * <p>
-     * Нужен для демонстрации
-     */
-    @Deprecated
-    public void getAdmin() {
-        var user = getCurrentUser();
-        user.setRole(Role.ROLE_ADMIN);
-        save(user);
+        var email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return getByEmail(email);
     }
 }
