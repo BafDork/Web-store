@@ -26,8 +26,8 @@ public class AuthenticationTests {
 
     @Test
     public void testSignUp_UserDoesNotExist() throws Exception {
-        String signUpRequest = String.format("{ \"username\": \"%s\", \"email\": \"%s\", \"password\": \"%s\" }",
-                testUserHelper.getUsername(), testUserHelper.getEmail(), testUserHelper.getPassword());
+        String signUpRequest = String.format("{ \"firstName\": \"%s\", \"lastName\": \"%s\", \"email\": \"%s\", \"password\": \"%s\" }",
+                testUserHelper.getFirtsName(), testUserHelper.getLastName(), testUserHelper.getEmail(), testUserHelper.getPassword());
 
         testUserHelper.deleteUserIfExists();
 
@@ -41,8 +41,8 @@ public class AuthenticationTests {
 
     @Test
     public void testSignUp_UserDoesExist() throws Exception {
-        String signUpRequest = String.format("{ \"username\": \"%s\", \"email\": \"%s\", \"password\": \"%s\" }",
-                testUserHelper.getUsername(), testUserHelper.getEmail(), testUserHelper.getPassword());
+        String signUpRequest = String.format("{ \"firstName\": \"%s\", \"lastName\": \"%s\", \"email\": \"%s\", \"password\": \"%s\" }",
+                testUserHelper.getFirtsName(), testUserHelper.getLastName(), testUserHelper.getEmail(), testUserHelper.getPassword());
 
         testUserHelper.createUserIfNotExists(Role.ROLE_USER);
 
@@ -56,8 +56,8 @@ public class AuthenticationTests {
 
     @Test
     public void testSignIn_UserDoesNotExist() throws Exception {
-        String signInRequest = String.format("{ \"username\": \"%s\", \"password\": \"%s\" }",
-                testUserHelper.getUsername(), testUserHelper.getPassword());
+        String signInRequest = String.format("{ \"email\": \"%s\", \"password\": \"%s\" }",
+                testUserHelper.getEmail(), testUserHelper.getPassword());
 
         testUserHelper.deleteUserIfExists();
 
@@ -69,8 +69,8 @@ public class AuthenticationTests {
 
     @Test
     public void testSignIn_UserDoesExist() throws Exception {
-        String signInRequest = String.format("{ \"username\": \"%s\", \"password\": \"%s\" }",
-                testUserHelper.getUsername(), testUserHelper.getPassword());
+        String signInRequest = String.format("{ \"email\": \"%s\", \"password\": \"%s\" }",
+                testUserHelper.getEmail(), testUserHelper.getPassword());
 
         testUserHelper.createUserIfNotExists(Role.ROLE_USER);
 

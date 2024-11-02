@@ -2,7 +2,8 @@
   <div>
     <h1>Регистрация</h1>
     <form @submit.prevent="signUp">
-      <input v-model="username" placeholder="Имя пользователя" required />
+      <input v-model="firstName" placeholder="Имя" required />
+      <input v-model="lastName" placeholder="Фамилия" required />
       <input v-model="email" type="email" placeholder="Электронная почта" required />
       <input v-model="password" type="password" placeholder="Пароль" required />
       <button type="submit">Зарегистрироваться</button>
@@ -17,7 +18,8 @@ import AuthService from '@/services/AuthService';
 export default {
   data() {
     return {
-      username: '',
+      firstName: '',
+      lastName: '',
       email: '',
       password: '',
       errorMessage: ''
@@ -27,7 +29,7 @@ export default {
     async signUp() {
       this.errorMessage = '';
       try {
-        await AuthService.signUp(this.username, this.email, this.password);
+        await AuthService.signUp(this.email, this.password, this.firstName, this.lastName);
         this.$router.push('/auth/sign-in');
       } catch (error) {
         this.errorMessage = error.response ? error.response.data.message : 'Произошла ошибка. Попробуйте позже.';

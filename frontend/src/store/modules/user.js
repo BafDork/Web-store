@@ -1,23 +1,32 @@
 export default {
     state: () => ({
-      user: null,
+      user: {
+        firstName: '',
+        lastName: '',
+      },
     }),
     mutations: {
-      setUser(state, user) {
-        state.user = user;
-      }
+      setUser(state, { firstName, lastName }) {
+        state.user.firstName = firstName;
+        state.user.lastName = lastName;
+      },
     },
     actions: {
-      login({ commit }, user) {
-        commit('setUser', user);
+      async login({ commit }, user) {
+        const response = await UserService.getUser();
+        commit('setUser', {
+          firstName: response.data.firstName,
+          lastName: response.data.lastName,
+        });
       },
       logout({ commit }) {
         commit('setUser', null);
-        commit('cart/clearCart', null, { root: true }); // Очистка корзины при выходе
+        commit('cart/clearCart', null, { root: true });
       }
     },
     getters: {
       isAuthenticated: (state) => !!state.user,
+      userName: state => `${state.user.firstName} ${state.user.lastName}`,
     }
   };
   

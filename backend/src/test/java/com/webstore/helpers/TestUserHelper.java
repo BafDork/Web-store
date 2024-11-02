@@ -26,7 +26,9 @@ public class TestUserHelper {
     private final PasswordEncoder passwordEncoder;
 
     @Getter
-    private final String username = "test_user";
+    private final String firtsName = "User";
+    @Getter
+    private final String lastName = "Userov";
     @Getter
     private final String email = "test_user@mail.com";
     @Getter
@@ -34,7 +36,7 @@ public class TestUserHelper {
 
     public UserDetails createMockUser(Role role) {
         return new org.springframework.security.core.userdetails.User(
-                username,
+                email,
                 passwordEncoder.encode(password),
                 Collections.singletonList(new SimpleGrantedAuthority(role.name()))
         );
@@ -42,7 +44,7 @@ public class TestUserHelper {
 
     public boolean isUserExists() {
         try {
-            userService.getByUsername(username);
+            userService.getByEmail(email);
             return true;
         } catch (UsernameNotFoundException e) {
             return false;
@@ -52,7 +54,8 @@ public class TestUserHelper {
     public void createUserIfNotExists(Role role) {
         if (!isUserExists()) {
             var user = User.builder()
-                    .username(username)
+                    .firstName(firtsName)
+                    .lastName(lastName)
                     .email(email)
                     .password(passwordEncoder.encode(password))
                     .role(role)
@@ -63,8 +66,7 @@ public class TestUserHelper {
 
     public void deleteUserIfExists() {
         if (isUserExists()) {
-            User user = userService.getByUsername(username);
-            userService.deleteByUsername(user.getUsername());
+            userService.deleteByEmail(email);
         }
     }
 }

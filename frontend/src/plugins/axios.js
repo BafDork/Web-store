@@ -1,8 +1,6 @@
-// src/plugins/axios.js
 import axios from 'axios';
 import AuthService from '@/services/AuthService';
 
-// Интерсептор для автоматического добавления токена
 axios.interceptors.request.use((config) => {
   const token = AuthService.getToken();
   if (token) {

@@ -1,21 +1,34 @@
-// src/services/AuthService.js
 import axios from 'axios';
 
-class AuthService {
-  async login(email, password) {
-    const response = await axios.post('http://localhost:8080/auth/sign-in', { email, password });
-    const { token, userId } = response.data;
+const AUTH_URL = 'http://localhost:8080/auth';
 
-    // Сохраняем токен и userId в localStorage
+class AuthService {
+
+  async login(email, password) {
+    const response = await axios.post(`${AUTH_URL}/sign-in`, { email, password });
+    const { token } = response.data;
+
     localStorage.setItem('token', token);
-    localStorage.setItem('userId', userId);
+
+    return { token };
+  }
+
+  async register(email, password, firstName, lastName) {
+    const response = await axios.post(`${AUTH_URL}/sign-up`, {
+      email,
+      password,
+      firstName,
+      lastName
+    });
+
+    const { token } = response.data;
+    localStorage.setItem('token', token);
     
-    return { token, userId };
+    return { token };
   }
 
   async logout() {
     localStorage.removeItem('token');
-    localStorage.removeItem('userId');
   }
 
   getToken() {

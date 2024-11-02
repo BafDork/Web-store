@@ -65,4 +65,11 @@ public class Cart {
             this.quantities.remove(index);
         }
     }
+
+    public void updateProduct(Product product, int quantity) {
+        int index = this.products.indexOf(product);
+        if (index >= 0) {
+            this.quantities.set(index, quantity);
+        }
+    }
 }

@@ -29,8 +29,8 @@ export default {
     ...mapActions(['login']),
     async loginAction() {
       try {
-        const user = await AuthService.login(this.email, this.password);
-        this.login(user);
+        await AuthService.login(this.email, this.password);
+        // загрузка данных пользователя !
         this.$router.push('/');
       } catch (error) {
         this.errorMessage = 'Ошибка авторизации';

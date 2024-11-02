@@ -36,7 +36,7 @@ public class AuthorizationTests {
 
         UserDetails userDetails = userService
                 .userDetailsService()
-                .loadUserByUsername(testUserHelper.getUsername());
+                .loadUserByUsername(testUserHelper.getEmail());
         String token = jwtService.generateToken(userDetails);
 
         mockMvc.perform(get("/protected-endpoint")

@@ -10,8 +10,20 @@ export default {
       state.items = items;
     },
 
-    addItem(state, item) {
-      state.items.push(item);
+    addItem(state, { productId, quantity }) {
+      const existingItem = state.items.find(item => item.productId === productId);
+      if (existingItem) {
+        existingItem.quantity += quantity;
+      } else {
+        state.items.push({ productId, quantity });
+      }
+    },
+
+    updateItemQuantity(state, { productId, quantity }) {
+      const existingItem = state.items.find(item => item.productId === productId);
+      if (existingItem) {
+        existingItem.quantity = quantity;
+      }
     },
 
     removeItem(state, productId) {
@@ -20,26 +32,30 @@ export default {
   },
 
   actions: {
-    async fetchCart({ commit }, userId) {
-      const response = await CartService.getCart(userId);
-      commit('setCart', response.data.products);
+    async fetchCart({ commit }) {
+      const response = await CartService.getCart();
+      commit('setCart', response.data.items);
     },
 
-    // ВОНЯЕТ ПИЗДЕЖОМ!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-    async addToCart({ commit }, { userId, productId, quantity }) {
-      await CartService.addToCart(userId, productId, quantity);
+    async addToCart({ commit }, { productId, quantity }) {
+      await CartService.addToCart(productId, quantity);
       commit('addItem', { productId, quantity });
     },
 
-    async removeFromCart({ commit }, { userId, productId }) {
-      await CartService.removeFromCart(userId, productId);
+    async updateCartItemQuantity({ commit }, { productId, quantity }) {
+      await CartService.updateProductQuantity(productId, quantity);
+      commit('updateItemQuantity', { productId, quantity });
+    },
+
+    async removeProductFromCart({ commit }, productId) {
+      await CartService.removeProductFromCart(productId);
       commit('removeItem', productId);
     },
   },
 
   getters: {
     cartItems: state => state.items,
+    cartCount: state => state.items.reduce((count, item) => count + item.quantity, 0),
     cartTotal: state => state.items.reduce((total, item) => total + item.price * item.quantity, 0),
   },
 };

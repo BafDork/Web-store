@@ -40,7 +40,6 @@ public class JwtService {
         }
     }
 
-
     /**
      * Генерация токена
      *

@@ -4,29 +4,29 @@ import com.webstore.model.Cart;
 import com.webstore.model.Product;
 import com.webstore.model.User;
 import com.webstore.repository.CartRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 @Service
+@RequiredArgsConstructor
 public class CartService {
 
-    @Autowired
-    private CartRepository cartRepository;
+    private final CartRepository cartRepository;
+    private final UserService userService;
+    private final ProductService productService;
 
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private ProductService productService;
-
-    public Cart getCartByUserId(Long userId) {
-        return cartRepository.findByUserId(userId);
+    public Cart getCart() {
+        User user = userService.getCurrentUser();
+        return cartRepository.findByUserId(user.getId());
     }
 
-    public void addProductToCart(Long userId, Long productId, int quantity) {
-        User user = userService.getUserById(userId);
-        Cart cart = cartRepository.findByUserId(userId);
+    public Cart save(Cart cart) {
+        return cartRepository.save(cart);
+    }
+
+    public void addProductToCart(Long productId, int quantity) {
+        User user = userService.getCurrentUser();
+        Cart cart = cartRepository.findByUserId(user.getId());
 
         if (cart == null) {
             cart = new Cart();
@@ -35,15 +35,26 @@ public class CartService {
 
         Product product = productService.getProductById(productId);
         cart.addProduct(product, quantity);
-        cartRepository.save(cart);
+        save(cart);
     }
 
-    public void removeProductFromCart(Long userId, Long productId) {
-        Cart cart = cartRepository.findByUserId(userId);
+    public void removeProductFromCart(Long productId) {
+        User user = userService.getCurrentUser();
+        Cart cart = cartRepository.findByUserId(user.getId());
         if (cart != null) {
             Product product = productService.getProductById(productId);
             cart.removeProduct(product);
-            cartRepository.save(cart);
+            save(cart);
+        }
+    }
+
+    public void updateProductQuantity(Long productId, int quantity) {
+        User user = userService.getCurrentUser();
+        Cart cart = cartRepository.findByUserId(user.getId());
+        if (cart != null) {
+            Product product = productService.getProductById(productId);
+            cart.updateProduct(product, quantity);
+            save(cart);
         }
     }
 }

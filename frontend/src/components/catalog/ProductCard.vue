@@ -11,7 +11,7 @@
           </span>
         </p>
         <div class="price-info">
-          <p v-if="product.discountPrice !== null">
+          <p v-if="isAuthenticated && product.discountPrice !== null">
             <span class="original-price">{{ formatPrice(product.price) }}</span>
             <span class="discounted-price">{{ formatPrice(product.discountPrice) }}</span>
           </p>
@@ -35,14 +35,13 @@ import { mapActions, mapGetters } from 'vuex';
   export default {
     props: {
       product: Object,
-      userId: {
-        type: Number,
-        required: true,
-      }
     },
 
     computed: {
       ...mapGetters('cart', ['isProductInCart']),
+
+      // ВОЗМОЖНО БОЛЬШОЙ КОСЯК
+      ...mapGetters('user', ['isAuthenticated']),
       
       isInCart() {
         return this.isProductInCart(this.product.id);
@@ -55,7 +54,7 @@ import { mapActions, mapGetters } from 'vuex';
 
       addToCartAction() {
         if (!this.isInCart) {
-          this.addToCart({ userId: this.userId, productId: this.product.id, quantity: 1 });
+          this.addToCart({ productId: this.product.id, quantity: 1 });
         }
       },
 

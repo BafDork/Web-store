@@ -71,7 +71,7 @@ public class UserService {
      * @return пользователь
      */
     public UserDetailsService userDetailsService() {
-        return this::getByEmail;  // Изменено на getByEmail
+        return this::getByEmail;
     }
 
     /**

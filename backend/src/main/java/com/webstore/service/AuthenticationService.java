@@ -6,7 +6,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import com.webstore.dto.JwtAuthenticationResponseDTO;
+import com.webstore.dto.JwtAuthenticationDTO;
 import com.webstore.dto.SignInRequestDTO;
 import com.webstore.dto.SignUpRequestDTO;
 import com.webstore.model.Role;
@@ -26,7 +26,7 @@ public class AuthenticationService {
      * @param request данные пользователя
      * @return токен
      */
-    public JwtAuthenticationResponseDTO signUp(SignUpRequestDTO request) {
+    public JwtAuthenticationDTO signUp(SignUpRequestDTO request) {
 
         var user = User.builder()
                 .firstName(request.getFirstName())
@@ -39,7 +39,7 @@ public class AuthenticationService {
         userService.create(user);
 
         var jwt = jwtService.generateToken(user);
-        return new JwtAuthenticationResponseDTO(jwt);
+        return new JwtAuthenticationDTO(jwt);
     }
 
     /**
@@ -48,7 +48,7 @@ public class AuthenticationService {
      * @param request данные пользователя
      * @return токен
      */
-    public JwtAuthenticationResponseDTO signIn(SignInRequestDTO request) {
+    public JwtAuthenticationDTO signIn(SignInRequestDTO request) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 request.getEmail(),
                 request.getPassword()
@@ -59,6 +59,6 @@ public class AuthenticationService {
                 .loadUserByUsername(request.getEmail());
 
         var jwt = jwtService.generateToken(user);
-        return new JwtAuthenticationResponseDTO(jwt);
+        return new JwtAuthenticationDTO(jwt);
     }
 }

@@ -143,21 +143,6 @@
                 this.fetchProducts();
             },
 
-            findCategoryById(categories, categoryId) {
-            for (const category of categories) {
-                if (category.id === categoryId) {
-                return category;
-                }
-                if (category.subCategories && category.subCategories.length > 0) {
-                const foundCategory = this.findCategoryById(category.subCategories, categoryId);
-                if (foundCategory) {
-                    return foundCategory;
-                }
-                }
-            }
-            return null;
-            },
-
             buildBreadcrumbPath(categories, categoryId, path = []) {
                 for (const category of categories) {
                     if (category.id === categoryId) {

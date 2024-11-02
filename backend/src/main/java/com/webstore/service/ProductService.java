@@ -18,11 +18,8 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class ProductService {
 
-    @Autowired
     private final ProductRepository productRepository;
-
-    @Autowired
-    private CategoryService categoryService;
+    private final CategoryService categoryService;
 
     public Product getProductById(Long productId) {
         return productRepository.findById(productId)
@@ -32,7 +29,7 @@ public class ProductService {
     public List<ProductDTO> findAllProducts() {
         return productRepository.findAll()
                 .stream()
-                .map(this::convertToProductDTO)
+                .map(ProductDTO::new)
                 .collect(Collectors.toList());
     }
 
@@ -41,19 +38,7 @@ public class ProductService {
 
         return productRepository.findByCategoriesIn(allSubCategories)
                 .stream()
-                .map(this::convertToProductDTO)
+                .map(ProductDTO::new)
                 .collect(Collectors.toList());
-    }
-
-    private ProductDTO convertToProductDTO(Product product) {
-        return new ProductDTO(
-                product.getId(),
-                product.getName(),
-                product.getDescription(),
-                product.getPrice(),
-                product.getDiscountPrice(),
-                product.getStock(),
-                product.getImageUrl()
-        );
     }
 }

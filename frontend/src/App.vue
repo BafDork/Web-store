@@ -21,15 +21,17 @@ export default {
     ...mapActions(['login']),
     
     async checkUser() {
-      const userId = localStorage.getItem('userId');
-      // if (userId) {
-      //   try {
-      //     const userData = await AuthService.fetchUser(userId);
-      //     this.login(userData); // Сохраняем данные пользователя в Vuex
-      //   } catch (error) {
-      //     console.error('Ошибка при получении данных пользователя:', error);
-      //   }
-      // }
+      const token = AuthService.getToken();
+      if (token) {
+        try {
+          // const userData = await AuthService.fetchUser();
+          // if (userData) {
+          //   this.login(userData);
+          // }
+        } catch (error) {
+          console.error('Ошибка при получении данных пользователя:', error);
+        }
+      }
     }
   }
 };

@@ -2,22 +2,24 @@ import axios from 'axios';
 
 const API_URL = 'http://localhost:8080/api/cart';
 
-export default {
-  getCart(userId) {
-    return axios.get(`${API_URL}/${userId}`);
-  },
+class CartService {
+  static getCart() {
+    return axios.get(`${API_URL}`);
+  }
 
-  addToCart(userId, productId, quantity) {
+  static addToCart(productId, quantity) {
     return axios.post(`${API_URL}/add`, {
-      userId,
       productId,
       quantity,
     });
-  },
+  }
 
-  removeFromCart(userId, productId) {
+  static removeFromCart(productId, quantity) {
     return axios.delete(`${API_URL}/remove`, {
-      data: { userId, productId },
+      productId, 
+      quantity,
     });
-  },
-};
+  }
+}
+
+export default CartService;
