@@ -19,6 +19,7 @@ import javax.persistence.FetchType;
 import javax.persistence.ElementCollection;
 import javax.persistence.CollectionTable;
 import javax.persistence.Table;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -46,12 +47,12 @@ public class Cart {
             joinColumns = @JoinColumn(name = "cart_id"),
             inverseJoinColumns = @JoinColumn(name = "product_id")
     )
-    private List<Product> products;
+    private List<Product> products = new ArrayList<>();
 
     @ElementCollection
     @CollectionTable(name = "cart_item_quantities", joinColumns = @JoinColumn(name = "cart_id"))
     @Column(name = "quantity")
-    private List<Integer> quantities;
+    private List<Integer> quantities = new ArrayList<>();
 
     public void addProduct(Product product, int quantity) {
         this.products.add(product);

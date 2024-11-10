@@ -1,6 +1,6 @@
 package com.webstore.controller;
 
-import com.webstore.dto.ProductDTO;
+import com.webstore.dto.response.ProductResponseDTO;
 import com.webstore.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,15 +19,14 @@ public class ProductController {
     private final ProductService productService;
 
     @GetMapping("/all")
-    public ResponseEntity<List<ProductDTO>> getAllProducts() {
-        List<ProductDTO> products = productService.findAllProducts();
+    public ResponseEntity<List<ProductResponseDTO>> getAllProducts() {
+        List<ProductResponseDTO> products = productService.findAllProducts();
         return ResponseEntity.ok(products);
     }
 
     @GetMapping("/category/{categoryId}")
-    public ResponseEntity<List<ProductDTO>> getProductsByCategory(
-            @PathVariable Long categoryId) {
-        List<ProductDTO> products = productService.findProductsByCategory(categoryId);
+    public ResponseEntity<List<ProductResponseDTO>> getProductsByCategory(@PathVariable Long categoryId) {
+        List<ProductResponseDTO> products = productService.findProductsByCategory(categoryId);
         return ResponseEntity.ok(products);
     }
 }

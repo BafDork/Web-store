@@ -1,12 +1,12 @@
-import axios from 'axios';
+import axios from '@/plugins/axios';
 
 const API_URL = 'http://localhost:8080/api/user';
 
 class UserService {
-  
-    async getUser() {
-        return await axios.get(`${API_URL}`);
-    }
+  async fetchUser() {
+    const response = await axios.get(`${API_URL}/me`);
+    return response.data;
   }
-  
-  export default new AuthService();
+}
+
+export default new UserService();

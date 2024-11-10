@@ -1,6 +1,6 @@
 package com.webstore.controller;
 
-import com.webstore.dto.CategoryDTO;
+import com.webstore.dto.response.CategoryResponseDTO;
 import com.webstore.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,8 +18,8 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @GetMapping("/top-level")
-    public ResponseEntity<List<CategoryDTO>> getTopLevelCategories() {
-        List<CategoryDTO> categories = categoryService.getTopLevelCategories();
+    public ResponseEntity<List<CategoryResponseDTO>> getTopLevelCategories() {
+        List<CategoryResponseDTO> categories = categoryService.getTopLevelCategories();
         return ResponseEntity.ok(categories);
     }
 }

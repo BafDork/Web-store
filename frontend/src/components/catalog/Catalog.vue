@@ -34,6 +34,7 @@
     import CategoryList from './CategoryList.vue';
     import ProductList from './ProductList.vue';
     import ProductService from "@/services/ProductService";
+    import CategoryService from "@/services/CategoryService";
     
     export default {
         data() {
@@ -54,12 +55,13 @@
         },
 
         computed: {
-            ...mapGetters(['showCatalog'])
+            ...mapGetters('catalog', ['showCatalog']),
         },
     
         methods: {
         
-            ...mapActions(['toggleCatalog']),
+            ...mapActions('cart', ['loadCart', 'addToCart']),
+            ...mapActions('catalog', ['toggleCatalog']),
         
             navigateToHome() {
                 this.currentCategoryId = null;
@@ -84,12 +86,21 @@
             },
     
             fetchCategories() {
-                ProductService.getCategories()
+                CategoryService.getTopLevelCategories()
                 .then(response => {
                     this.categories = response.data;
                 })
                 .catch(error => {
                     console.error("Ошибка при загрузке категорий:", error);
+                });
+            },
+
+            fetchCart() {
+                this.loadCart()
+                .then(response => {
+                })
+                .catch(error => {
+                    console.error("Ошибка при загрузке корзины:", error);
                 });
             },
     
@@ -163,6 +174,7 @@
         mounted() {
             this.fetchCategories();
             this.fetchProducts();
+            this.fetchCart();
         },
 
         watch: {

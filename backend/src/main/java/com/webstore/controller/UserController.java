@@ -1,6 +1,6 @@
 package com.webstore.controller;
 
-import com.webstore.dto.UserDTO;
+import com.webstore.dto.response.UserResponseDTO;
 import com.webstore.model.User;
 import com.webstore.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -15,11 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/user")
 @RequiredArgsConstructor
 public class UserController {
+
     private final UserService userService;
 
-    @GetMapping("")
-    public ResponseEntity<UserDTO> getCurrentUser(@AuthenticationPrincipal UserDetails userDetails) {
+    @GetMapping("/me")
+    public ResponseEntity<UserResponseDTO> getCurrentUser(@AuthenticationPrincipal UserDetails userDetails) {
         User user = userService.getCurrentUser();
-        return ResponseEntity.ok(new UserDTO(user));
+        return ResponseEntity.ok(new UserResponseDTO(user));
     }
 }

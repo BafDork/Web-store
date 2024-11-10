@@ -6,33 +6,36 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
-import AuthService from '@/services/AuthService';
+import { mapGetters, mapActions } from 'vuex';
 import Header from './components/Header.vue';
 
 export default {
   components: {
     Header,
   },
-  created() {
-    this.checkUser();
+
+  computed: {
+    ...mapGetters('user', ['isAuthenticated']),
   },
+
   methods: {
-    ...mapActions(['login']),
-    
-    async checkUser() {
-      const token = AuthService.getToken();
-      if (token) {
-        try {
-          // const userData = await AuthService.fetchUser();
-          // if (userData) {
-          //   this.login(userData);
-          // }
-        } catch (error) {
-          console.error('Ошибка при получении данных пользователя:', error);
-        }
+    ...mapActions('user', ['loadUser']),
+
+    async fetchUser() {
+      try {
+        await this.loadUser();
+      } catch (error) {
+        console.error("Ошибка при загрузке пользователя:", error);
       }
     }
+  },
+
+  created() {
+    const token = localStorage.getItem('token');
+    if (token) {
+      this.fetchUser();
+    }
   }
+
 };
 </script>

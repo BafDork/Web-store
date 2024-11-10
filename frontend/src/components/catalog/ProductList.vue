@@ -8,12 +8,12 @@
   	import ProductCard from './ProductCard.vue';
   
   	export default {
-			props: {
-	 			products: Array
-			},
-			components: {
-				ProductCard
-			}
+		props: {
+			products: Array
+		},
+		components: {
+			ProductCard
+		}
   	};
 </script>
   

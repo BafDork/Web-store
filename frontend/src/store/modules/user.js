@@ -1,32 +1,42 @@
+import AuthService from '@/services/AuthService';
+import UserService from '@/services/UserService';
+
 export default {
-    state: () => ({
-      user: {
-        firstName: '',
-        lastName: '',
-      },
-    }),
-    mutations: {
-      setUser(state, { firstName, lastName }) {
-        state.user.firstName = firstName;
-        state.user.lastName = lastName;
-      },
+  namespaced: true,
+  state: {
+    user: null,
+  },
+  mutations: {
+    setUser(state, user) {
+      state.user = user;
     },
-    actions: {
-      async login({ commit }, user) {
-        const response = await UserService.getUser();
-        commit('setUser', {
-          firstName: response.data.firstName,
-          lastName: response.data.lastName,
-        });
-      },
-      logout({ commit }) {
-        commit('setUser', null);
-        commit('cart/clearCart', null, { root: true });
-      }
-    },
-    getters: {
-      isAuthenticated: (state) => !!state.user,
-      userName: state => `${state.user.firstName} ${state.user.lastName}`,
+    clearUser(state) {
+      state.user = null;
     }
-  };
-  
+  },
+  actions: {
+    async login({ dispatch }, { email, password }) {
+      await AuthService.login(email, password);
+      await dispatch('loadUser');
+    },
+
+    async register({ dispatch }, { email, password, firstName, lastName }) {
+      await AuthService.signUp(email, password, firstName, lastName);
+      await dispatch('loadUser');
+    },
+
+    async loadUser({ commit }) {
+      const user = await UserService.fetchUser();
+      commit('setUser', user);
+    },
+
+    logout({ commit }) {
+      AuthService.logout();
+      commit('clearUser');
+    }
+  },
+  getters: {
+    isAuthenticated: (state) => !!state.user && !!AuthService.getToken(),
+    userName: (state) => state.user ? `${state.user.firstName} ${state.user.lastName}` : '',
+  }
+};

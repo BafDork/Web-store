@@ -1,7 +1,8 @@
 export default {
-    state: () => ({
+    namespaced: true,
+    state: {
       showCatalog: false,
-    }),
+    },
     mutations: {
       toggleCatalog(state) {
         state.showCatalog = !state.showCatalog;

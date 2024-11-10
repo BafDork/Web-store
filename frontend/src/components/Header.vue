@@ -1,32 +1,52 @@
 <template>
-    <header>
-      <nav>
-        <span @click="toggleCatalog" class="catalog-link">Каталог</span>
-        <div class="nav-right">
-          <router-link v-if="!isAuthenticated" to="/auth/sign-in" class="nav-item">Войти</router-link>
-          <router-link v-if="isAuthenticated" to="/cart" class="nav-item">Корзина ({{ cartCount }})</router-link>
-          <Logout v-if="isAuthenticated" />
+  <header>
+    <nav>
+      <span @click="toggleCatalogAction" class="catalog-link">Каталог</span>
+      <div class="nav-right">
+        <router-link v-if="!isAuthenticated" to="/auth/sign-in" class="nav-item">Войти</router-link>
+        <router-link v-if="isAuthenticated" to="/cart" class="nav-item">Корзина ({{ cartCount }})</router-link>
+        <div v-if="isAuthenticated" class="user-info">
+          {{ userDisplayName }}
+          <Logout />
         </div>
-      </nav>
-    </header>
-  </template>
-  
-  <script>
-  import { mapGetters, mapActions } from 'vuex';
-  import Logout from '@/components/authentication/Logout.vue';
-  
-  export default {
-    components: {
-      Logout,
+      </div>
+    </nav>
+  </header>
+</template>
+
+<script>
+import { mapGetters, mapActions } from 'vuex';
+import Logout from '@/components/authentication/Logout.vue';
+
+export default {
+  components: {
+    Logout,
+  },
+
+  computed: {
+    ...mapGetters('user', ['isAuthenticated', 'userName']),
+    ...mapGetters('cart', ['cart', 'cartCount']),
+
+    userDisplayName() {
+      const [firstName, lastName] = this.userName.split(" ");
+      return `${lastName} ${firstName ? firstName[0] + '.' : ''}`;
+    }
+  },
+
+  methods: {
+    ...mapActions('catalog', ['toggleCatalog']),
+
+    toggleCatalogAction() {
+      if (this.$route.path === '/') {
+        this.toggleCatalog();
+      } else {
+        this.$router.push('/');
+      }
     },
-    computed: {
-      ...mapGetters(['isAuthenticated', 'cartCount']),
-    },
-    methods: {
-      ...mapActions(['toggleCatalog']),
-    },
-  };
-  </script>
+  },
+};
+</script>
+
   
   <style scoped>
   header {

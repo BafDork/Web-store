@@ -1,61 +1,65 @@
 import CartService from '@/services/CartService';
 
 export default {
+  namespaced: true,
   state: {
-    items: [],
+    cart: [],
   },
 
   mutations: {
-    setCart(state, items) {
-      state.items = items;
+    setCart(state, cart) {
+      state.cart = cart;
     },
 
-    addItem(state, { productId, quantity }) {
-      const existingItem = state.items.find(item => item.productId === productId);
+    addItem(state, { product, quantity }) {
+      const existingItem = state.cart.find(i => i.product.id === product.id);
       if (existingItem) {
         existingItem.quantity += quantity;
       } else {
-        state.items.push({ productId, quantity });
-      }
-    },
-
-    updateItemQuantity(state, { productId, quantity }) {
-      const existingItem = state.items.find(item => item.productId === productId);
-      if (existingItem) {
-        existingItem.quantity = quantity;
+        state.cart.push({ product, quantity });
       }
     },
 
     removeItem(state, productId) {
-      state.items = state.items.filter(item => item.productId !== productId);
+      state.cart = state.cart.filter(item => item.product.id !== productId);
     },
+
+    updateItemQuantity(state, { productId, quantity }) {
+      const item = state.cart.find(i => i.product.id === productId);
+      if (item) {
+        item.quantity = quantity;
+      }
+    }
   },
 
   actions: {
-    async fetchCart({ commit }) {
+    async loadCart({ commit }) {
       const response = await CartService.getCart();
-      commit('setCart', response.data.items);
+      commit('setCart', response.data);
     },
 
-    async addToCart({ commit }, { productId, quantity }) {
-      await CartService.addToCart(productId, quantity);
-      commit('addItem', { productId, quantity });
+    async addToCart({ commit }, { product, quantity }) {
+      console.log(product.id, quantity);
+      await CartService.addToCart(product.id, quantity);
+      commit('addItem', { product, quantity });
     },
 
-    async updateCartItemQuantity({ commit }, { productId, quantity }) {
-      await CartService.updateProductQuantity(productId, quantity);
-      commit('updateItemQuantity', { productId, quantity });
-    },
-
-    async removeProductFromCart({ commit }, productId) {
-      await CartService.removeProductFromCart(productId);
+    async removeFromCart({ commit }, { productId }) {
+      await CartService.removeFromCart(productId);
       commit('removeItem', productId);
     },
+
+    async updateQuantity({ commit }, { productId, quantity }) {
+      console.log("store", productId, quantity);
+      await CartService.updateQuantity(productId, quantity);
+      commit('updateItemQuantity', { productId, quantity });
+    }
   },
 
   getters: {
-    cartItems: state => state.items,
-    cartCount: state => state.items.reduce((count, item) => count + item.quantity, 0),
-    cartTotal: state => state.items.reduce((total, item) => total + item.price * item.quantity, 0),
-  },
+    cartItems: state => state.cart,
+    cartCount: state => state.cart.length,
+    cartTotal: state => state.cart.reduce((total, item) => total + ((item.product.price || item.product.discountPrice) * item.quantity), 0),
+    isProductInCart: (state) => (productId) => (state.cart && state.cart.some(item => item.product.id === productId)),
+  }
 };

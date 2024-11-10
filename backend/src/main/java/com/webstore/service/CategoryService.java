@@ -1,6 +1,6 @@
 package com.webstore.service;
 
-import com.webstore.dto.CategoryDTO;
+import com.webstore.dto.response.CategoryResponseDTO;
 import com.webstore.exceptions.ResourceNotFoundException;
 import com.webstore.model.Category;
 import com.webstore.repository.CategoryRepository;
@@ -23,10 +23,10 @@ public class CategoryService {
                 .orElseThrow(() -> new ResourceNotFoundException("Категория не найдена с ID: " + categoryId));
     }
 
-    public List<CategoryDTO> getTopLevelCategories() {
+    public List<CategoryResponseDTO> getTopLevelCategories() {
         List<Category> categories = categoryRepository.findByParentIsNullOrderByNameAsc();
         return categories.stream()
-                .map(CategoryDTO::new)
+                .map(CategoryResponseDTO::new)
                 .collect(Collectors.toList());
     }
 

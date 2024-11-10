@@ -1,25 +1,21 @@
-package com.webstore.dto;
+package com.webstore.dto.response;
 
 import com.webstore.model.Category;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Data
-@Builder
-@NoArgsConstructor
 @AllArgsConstructor
-public class CategoryDTO {
+public class CategoryResponseDTO {
     private Long id;
     private String name;
     private List<SubCategoryDTO> subCategories;
 
-    public CategoryDTO(Category category) {
+    public CategoryResponseDTO(Category category) {
         List<SubCategoryDTO> subCategories = category.getSubCategories().stream()
                 .sorted(Comparator.comparing(Category::getName))
                 .map(SubCategoryDTO::new)
@@ -30,7 +26,9 @@ public class CategoryDTO {
         this.subCategories = subCategories;
     }
 
-    public class SubCategoryDTO {
+    @Data
+    @AllArgsConstructor
+    public static class SubCategoryDTO {
         private Long id;
         private String name;
 

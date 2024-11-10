@@ -14,7 +14,6 @@
 </template>
 
 <script>
-import AuthService from '@/services/AuthService';
 import { mapActions } from 'vuex';
 
 export default {
@@ -26,22 +25,17 @@ export default {
     };
   },
   methods: {
-    ...mapActions(['login']),
+    ...mapActions('user', ['login', 'loadUser']),
+
     async loginAction() {
       try {
-        await AuthService.login(this.email, this.password);
-        // загрузка данных пользователя !
+        await this.login({ email: this.email, password: this.password });
+        await this.loadUser();
         this.$router.push('/');
       } catch (error) {
-        this.errorMessage = 'Ошибка авторизации';
+        this.errorMessage = error.response ? error.response.data.message : 'Ошибка авторизации';
       }
     }
   }
 };
 </script>
-
-<style scoped>
-.error {
-  color: red;
-}
-</style>

@@ -4,21 +4,19 @@ const API_URL = 'http://localhost:8080/api/cart';
 
 class CartService {
   static getCart() {
-    return axios.get(`${API_URL}`);
+    return axios.get(API_URL);
   }
 
   static addToCart(productId, quantity) {
-    return axios.post(`${API_URL}/add`, {
-      productId,
-      quantity,
-    });
+    return axios.post(`${API_URL}/add`, { productId, quantity });
   }
 
-  static removeFromCart(productId, quantity) {
-    return axios.delete(`${API_URL}/remove`, {
-      productId, 
-      quantity,
-    });
+  static removeFromCart(productId) {
+    return axios.delete(`${API_URL}/remove/${productId}`);
+  }
+
+  static updateQuantity(productId, quantity) {
+    return axios.put(`${API_URL}/update-quantity`, { productId, quantity });
   }
 }
 

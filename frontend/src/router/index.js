@@ -2,9 +2,9 @@ import { createRouter, createWebHistory } from 'vue-router';
 import store from '@/store';
 
 const routes = [
-  { path: '/', name: 'Catalog', component: () => import('@/components/Catalog.vue') },
-  { path: '/auth/sing-in', name: 'SingIn', component: () => import('@/components/authentication/SingIn.vue') },
-  { path: '/auth/sing-up', name: 'SingUp', component: () => import('@/components/authentication/SingUp.vue') },
+  { path: '/', name: 'Catalog', component: () => import('@/components/catalog/Catalog.vue') },
+  { path: '/auth/sign-in', name: 'SignIn', component: () => import('@/components/authentication/SignIn.vue') },
+  { path: '/auth/sign-up', name: 'SignUp', component: () => import('@/components/authentication/SignUp.vue') },
   { path: '/cart', name: 'Cart', component: () => import('@/components/cart/Cart.vue'), meta: { requiresAuth: true } },
 ];
 
@@ -14,8 +14,8 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  if (to.meta.requiresAuth && !store.getters.isAuthenticated) {
-    next('/auth/sing-in');
+  if (to.meta.requiresAuth && !store.getters['user/isAuthenticated']) {
+    next('/auth/sign-in');
   } else {
     next();
   }

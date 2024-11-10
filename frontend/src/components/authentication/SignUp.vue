@@ -32,7 +32,7 @@ export default {
         await AuthService.signUp(this.email, this.password, this.firstName, this.lastName);
         this.$router.push('/auth/sign-in');
       } catch (error) {
-        this.errorMessage = error.response ? error.response.data.message : 'Произошла ошибка. Попробуйте позже.';
+        this.errorMessage = error.response ? error.response.data.message : 'Ошибка регистрации';
       }
     }
   }

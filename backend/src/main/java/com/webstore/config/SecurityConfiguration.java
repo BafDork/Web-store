@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.var;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -29,6 +30,7 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfiguration {
 
+    @Lazy // Предотвращает преждевременную инициализацию
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final UserService userService;
 
@@ -46,10 +48,11 @@ public class SecurityConfiguration {
                 }))
                 // Настройка доступа к конечным точкам
                 .authorizeHttpRequests(request -> request
-                        //.antMatchers("/auth/**").permitAll()
-                        //.antMatchers("/endpoint", "/admin/**").hasRole("ADMIN")
-                        //.anyRequest().authenticated())
-                        .anyRequest().permitAll())
+                        .antMatchers("/auth/**").permitAll()
+                        .antMatchers("/api/category/**").permitAll()
+                        .antMatchers("/api/product/**").permitAll()
+                        .antMatchers("/endpoint", "/admin/**").hasRole("ADMIN")
+                        .anyRequest().authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

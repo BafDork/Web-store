@@ -1,16 +1,12 @@
-package com.webstore.dto;
+package com.webstore.dto.response;
 
 import com.webstore.model.Product;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@Builder
-@NoArgsConstructor
 @AllArgsConstructor
-public class ProductDTO {
+public class ProductResponseDTO {
     private Long id;
     private String name;
     private String description;
@@ -19,7 +15,7 @@ public class ProductDTO {
     private int stock;
     private String imageUrl;
 
-    public ProductDTO(Product product) {
+    public ProductResponseDTO(Product product) {
         this.id = product.getId();
         this.name = product.getName();
         this.description = product.getDescription();

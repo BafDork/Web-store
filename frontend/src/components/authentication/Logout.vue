@@ -7,7 +7,7 @@
   
   export default {
     methods: {
-      ...mapActions(['logout']),
+      ...mapActions('user', ['logout']),
     },
   };
   </script>
