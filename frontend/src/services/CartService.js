@@ -18,6 +18,16 @@ class CartService {
   static updateQuantity(productId, quantity) {
     return axios.put(`${API_URL}/update-quantity`, { productId, quantity });
   }
+
+  async createOrder() {
+    try {
+      const response = await axios.post(API_URL + '/checkout');
+      return response.data;
+    } catch (error) {
+      console.error('Ошибка при создании заказа:', error);
+      throw error;
+    }
+  }
 }
 
 export default CartService;

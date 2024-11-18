@@ -58,6 +58,26 @@ CREATE TABLE cart_item_quantities (
     FOREIGN KEY (cart_id) REFERENCES shopping_carts (id) ON DELETE CASCADE
 );
 
+-- Создание таблицы заказов
+CREATE TABLE orders (
+    id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL,
+    order_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    total_amount DECIMAL(10, 2) NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
+);
+
+-- Создание таблицы элементов заказа
+CREATE TABLE order_items (
+    id SERIAL PRIMARY KEY,
+    order_id INT NOT NULL,
+    product_id INT NOT NULL,
+    quantity INT NOT NULL,
+    price DECIMAL(10, 2) NOT NULL,
+    FOREIGN KEY (order_id) REFERENCES orders (id) ON DELETE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES products (id) ON DELETE CASCADE
+);
+
 -- Вставка начальных данных в таблицу пользователей
 INSERT INTO users (first_name, last_name, email, password, role) VALUES
 ('Admin', 'Adminov', 'admin@mail.com', 'adminpass', 'ROLE_ADMIN'),

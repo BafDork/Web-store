@@ -36,6 +36,7 @@ export default {
     }
   },
   getters: {
+    getUser: (state) => state.user,
     isAuthenticated: (state) => !!state.user && !!AuthService.getToken(),
     userName: (state) => state.user ? `${state.user.firstName} ${state.user.lastName}` : '',
   }

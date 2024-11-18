@@ -1,23 +1,22 @@
 <template>
-    <div class="controls">
-        <select @change="$emit('sort-change', $event.target.value)">
-            <option value="asc">Сначала дешевле</option>
-            <option value="desc">Сначала дороже</option>
-        </select>
+    <div class="controls d-flex justify-content-end mb-3">
+      <select @change="$emit('sort-change', $event.target.value)" class="form-select w-auto">
+        <option value="asc">Сначала дешевле</option>
+        <option value="desc">Сначала дороже</option>
+      </select>
     </div>
-</template>
-
-<script>
+  </template>
+  
+  <script>
     export default {};
-</script>
-
-<style scoped>
+  </script>
+  
+  <style scoped>
     .controls {
-        margin: 20px 0;
+      margin-right: 10px;
     }
-
+  
     select {
-        padding: 5px;
-        font-size: 1em;
+      font-size: 1em;
     }
-</style>
+  </style>

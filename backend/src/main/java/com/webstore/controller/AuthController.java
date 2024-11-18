@@ -2,6 +2,7 @@ package com.webstore.controller;
 
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,8 +20,9 @@ public class AuthController {
     private final AuthenticationService authenticationService;
 
     @PostMapping("/sign-up")
-    public JwtResponseDTO signUp(@RequestBody @Valid SignUpRequestDTO request) {
-        return authenticationService.signUp(request);
+    public ResponseEntity<Void> signUp(@RequestBody @Valid SignUpRequestDTO request) {
+        authenticationService.signUp(request);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/sign-in")

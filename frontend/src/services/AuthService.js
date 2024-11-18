@@ -4,22 +4,16 @@ const API_URL = 'http://localhost:8080/auth';
 
 class AuthService {
   async login(email, password) {
-    const response = await axios.post(`${API_URL}/sign-in`, { email, password });
-    const { token } = response.data;
-    localStorage.setItem('token', token);
-    return { token };
+    await axios.post(`${API_URL}/sign-in`, { email, password });
   }
 
   async signUp(email, password, firstName, lastName) {
-    const response = await axios.post(`${API_URL}/sign-up`, {
+    await axios.post(`${API_URL}/sign-up`, {
       firstName,
       lastName,
       email,
       password
     });
-    const { token } = response.data;
-    localStorage.setItem('token', token);
-    return { token };
   }
 
   logout() {
@@ -31,4 +25,5 @@ class AuthService {
   }
 }
 
+// поправить на статик
 export default new AuthService();

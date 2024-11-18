@@ -1,22 +1,24 @@
 <template>
     <div>
         <div v-if="breadcrumbPath.length" class="breadcrumb">
-            <span @click="navigateToHome" class="breadcrumb-item">Главная</span>
-            <span v-if="breadcrumbPath.length"> / </span>
+            <span @click="navigateToHome" class="breadcrumb-item">Главная </span>
             <span v-for="(category, index) in breadcrumbPath" 
                     :key="index"
                     @click="navigateToBreadcrumb(category.id)"
                     class="breadcrumb-item">
                 {{ category.name }}
-                <span v-if="index < breadcrumbPath.length - 1"> / </span>
             </span>
         </div>
-  
-        <div class="current-category">
-            <strong>{{ currentCategoryName }}</strong> ({{ products.length }} товаров)
+
+        <div class="category-and-controls">
+            <div class="current-category">
+                <strong>{{ currentCategoryName }}</strong> ({{ products.length }} товаров)
+            </div>
+            <div class="sorting-control">
+                <Controls ref="controls" @sort-change="onSortChange" />
+            </div>
         </div>
   
-        <Controls ref="controls" @sort-change="onSortChange" />
         <CategoryList 
             v-if="showCatalog"
             :categories="categories" 
@@ -43,7 +45,7 @@
                 categories: [],
                 currentCategoryId: null,
                 sortOrder: 'asc',
-                currentCategoryName: '',
+                currentCategoryName: 'Главная',
                 breadcrumbPath: []
             };
         },
@@ -56,6 +58,7 @@
 
         computed: {
             ...mapGetters('catalog', ['showCatalog']),
+            ...mapGetters('user', ['isAuthenticated']),
         },
     
         methods: {
@@ -174,7 +177,9 @@
         mounted() {
             this.fetchCategories();
             this.fetchProducts();
-            this.fetchCart();
+            if (this.isAuthenticated) {
+                this.fetchCart();
+            }
         },
 
         watch: {
@@ -186,32 +191,35 @@
 </script>
   
 <style scoped>
-    .catalog {
-        padding: 20px;
+    .category-and-controls {
+        margin-top: 14px;
+        display: flex;
     }
-    
-    .catalog-title.clickable {
-        cursor: pointer;
-        color: #007bff;
-        text-decoration: underline;
-        margin-bottom: 10px;
+
+    .current-category {
+        font-size: 1.25em;
+        font-weight: bold;
+        padding-left: 18px;
+        color: #616161;
+    }
+
+    .sorting-control {
+        margin-left: auto;
+    }
+
+    .breadcrumb {
+        font-size: 1.0em;
+        margin-left: 18px;
+        margin-top: 10px;
     }
 
     .breadcrumb-item {
         cursor: pointer;
-        color: #007bff;
+        color: #616161;
+    }
+
+    .breadcrumb-item:hover {
         text-decoration: underline;
-    }
-    
-    .breadcrumb {
-        font-size: 1.1em;
-        margin-top: 0.5em;
-    }
-    
-    .current-category {
-        font-size: 1.25em;
-        font-weight: bold;
-        margin: 1em 0;
-    }
+    }  
 </style>
   

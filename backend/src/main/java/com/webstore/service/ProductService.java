@@ -2,6 +2,7 @@ package com.webstore.service;
 
 import com.webstore.dto.response.ProductResponseDTO;
 import com.webstore.exceptions.ResourceNotFoundException;
+import com.webstore.model.Cart;
 import com.webstore.model.Category;
 import com.webstore.model.Product;
 import com.webstore.repository.ProductRepository;
@@ -39,5 +40,9 @@ public class ProductService {
                 .stream()
                 .map(ProductResponseDTO::new)
                 .collect(Collectors.toList());
+    }
+
+    public void saveProduct(Product product) {
+        productRepository.save(product);
     }
 }

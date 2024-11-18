@@ -3,12 +3,15 @@ package com.webstore.service;
 import com.webstore.dto.response.CartProductResponseDTO;
 import com.webstore.dto.response.ProductResponseDTO;
 import com.webstore.model.Cart;
+import com.webstore.model.Order;
+import com.webstore.model.OrderItem;
 import com.webstore.model.Product;
 import com.webstore.model.User;
 import com.webstore.repository.CartRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,6 +74,12 @@ public class CartService {
 
         Product product = productService.getProductById(productId);
         cart.updateProduct(product, quantity);
+        saveCart(cart);
+    }
+
+    public void clearCart(Cart cart) {
+        cart.getProducts().clear();
+        cart.getQuantities().clear();
         saveCart(cart);
     }
 

@@ -6,6 +6,21 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: eugrne@gmail.com
+    password: krdy ovev dcbh yzpp
+    protocol: smtp
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 500
 
 jwt:
   secret: 9afe53f9139941905e830f5096eba6fb45b27a3f6e72070a8d728a52536abf801ae58ad976d389fe8d92d78a997c3b8b2e76cc6800b364b3d52e9f4e473c5b095ef83a59bcce855c063aaa96f65de8ed55fb4d5a1f012af72a1b69f3067c93935a94cbab66a50417293cb0b144424e12781dd66095cba5ab13fa194de08314f0b7e91c71a79fdd4704b597bfe62a012c5b63e7b58d089642a6788f3d240b41cee94b77b922cba5369636355e3d96e66a4959f0b306ca38f6a5eaa89e416f2c950f88412f4922048bb46d761da7172121f1c5393e627899dc85f5ce08f0ba5266a364aea894262cab8d4c4338c2ee691ab32f41e26b759b1d813e1dc3c75981eb

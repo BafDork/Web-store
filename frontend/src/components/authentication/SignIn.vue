@@ -1,15 +1,37 @@
 <template>
-  <div>
-    <h1>Войти</h1>
+  <div class="container mt-5">
+    <h1 class="mb-4">Войти</h1>
     <form @submit.prevent="loginAction">
-      <label>Email:</label>
-      <input type="email" v-model="email" required />
-      <label>Пароль:</label>
-      <input type="password" v-model="password" required />
-      <button type="submit">Войти</button>
+      <div class="mb-3">
+        <label for="email" class="form-label">Email:</label>
+        <input 
+          type="email" 
+          id="email" 
+          class="form-control" 
+          v-model="email" 
+          required 
+        />
+      </div>
+
+      <div class="mb-3">
+        <label for="password" class="form-label">Пароль:</label>
+        <input 
+          type="password" 
+          id="password" 
+          class="form-control" 
+          v-model="password" 
+          required 
+        />
+      </div>
+
+      <button type="submit" class="btn btn-primary w-100">Войти</button>
     </form>
-    <router-link to="/auth/sign-up">Зарегистрироваться</router-link>
-    <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
+
+    <div class="mt-3 text-center">
+      <router-link to="/auth/sign-up">Зарегистрироваться</router-link>
+    </div>
+
+    <p v-if="errorMessage" class="text-danger" v-html="errorMessage"></p>
   </div>
 </template>
 
@@ -33,7 +55,11 @@ export default {
         await this.loadUser();
         this.$router.push('/');
       } catch (error) {
-        this.errorMessage = error.response ? error.response.data.message : 'Ошибка авторизации';
+        if (error.response && error.response.data) {
+          this.errorMessage = error.response.data.message;
+        } else {
+          this.errorMessage = 'Ошибка авторизации';
+        }
       }
     }
   }

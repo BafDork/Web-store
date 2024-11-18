@@ -28,10 +28,6 @@
 </script>
 
 <style scoped>
-    .catalog-menu {
-        margin: 10px 0;
-    }
-
     .category-item {
         cursor: pointer;
         list-style: none;

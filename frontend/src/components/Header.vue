@@ -1,7 +1,7 @@
 <template>
   <header>
     <nav>
-      <span @click="toggleCatalogAction" class="catalog-link">Каталог</span>
+      <h2 @click="toggleCatalogAction" class="catalog-link">Каталог</h2>
       <div class="nav-right">
         <router-link v-if="!isAuthenticated" to="/auth/sign-in" class="nav-item">Войти</router-link>
         <router-link v-if="isAuthenticated" to="/cart" class="nav-item">Корзина ({{ cartCount }})</router-link>
@@ -50,16 +50,19 @@ export default {
   
   <style scoped>
   header {
-    background-color: #282c34;
+    border-bottom: 1px solid #ddd;
     padding: 20px;
   }
   
   .catalog-link {
     cursor: pointer;
-    color: #007bff;
     font-weight: bold;
-    text-decoration: underline;
+    color: #f54242;
   }
+
+  .catalog-link:hover {
+    text-decoration: underline;
+}
   
   nav {
     display: flex;
@@ -68,9 +71,9 @@ export default {
   }
   
   .nav-item {
-    color: #61dafb;
     margin-right: 20px;
     text-decoration: none;
+    color: #000000;
   }
   
   .nav-item:hover {
@@ -80,6 +83,11 @@ export default {
   .nav-right {
     display: flex;
     align-items: center;
+    font-size: 1.1em;
+  }
+
+  .user-info {
+    font-weight: bold;
   }
   </style>
   

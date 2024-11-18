@@ -1,12 +1,21 @@
 import axios from 'axios';
 import AuthService from '@/services/AuthService';
 
-axios.interceptors.request.use((config) => {
+axios.interceptors.request.use((request) => {
   const token = AuthService.getToken();
   if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+    request.headers.Authorization = `Bearer ${token}`;
   }
-  return config;
+  return request;
 }, (error) => Promise.reject(error));
+
+axios.interceptors.response.use((response) => {
+    if (response.data?.token) {
+      const { token } = response.data;
+      localStorage.setItem('token', token);
+      localStorage.setItem('token', token);
+    }
+    return response;
+  }, (error) => Promise.reject(error));
 
 export default axios;

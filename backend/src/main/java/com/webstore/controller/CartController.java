@@ -50,4 +50,5 @@ public class CartController {
         cartService.updateProductQuantity(request.getProductId(), request.getQuantity());
         return ResponseEntity.ok().build();
     }
+
 }

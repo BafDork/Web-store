@@ -142,4 +142,15 @@ public class JwtService {
         byte[] keyBytes = Decoders.BASE64.decode(jwtSigningKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
+
+    /**
+     * Получение оставшегося времени жизни токена в миллисекундах.
+     *
+     * @param token токен
+     * @return оставшееся время жизни токена в миллисекундах
+     */
+    public long getRemainingTime(String token) {
+        Date expirationDate = extractExpiration(token);
+        return expirationDate.getTime() - System.currentTimeMillis();
+    }
 }

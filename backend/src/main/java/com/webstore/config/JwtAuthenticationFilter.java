@@ -6,13 +6,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.webstore.exceptions.InvalidTokenException;
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.var;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -28,6 +28,7 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     public static final String BEARER_PREFIX = "Bearer ";
     public static final String HEADER_NAME = "Authorization";
+    private static final long REFRESH_THRESHOLD = 10 * 60 * 1000;
     private final JwtService jwtService;
     private final UserService userService;
 
@@ -38,15 +39,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
 
-        // Получаем токен из заголовка
         var authHeader = request.getHeader(HEADER_NAME);
         if (StringUtils.isEmpty(authHeader) || !StringUtils.startsWith(authHeader, BEARER_PREFIX)) {
             filterChain.doFilter(request, response);
             return;
         }
 
+        var jwt = authHeader.substring(BEARER_PREFIX.length());
         try {
-            var jwt = authHeader.substring(BEARER_PREFIX.length());
+            // Попытка извлечения имени пользователя
             var username = jwtService.extractUserName(jwt);
 
             if (StringUtils.isNotEmpty(username) && SecurityContextHolder.getContext().getAuthentication() == null) {
@@ -54,10 +55,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         .userDetailsService()
                         .loadUserByUsername(username);
 
-                // Если токен валиден, то аутентифицируем пользователя
+                // Проверка валидности токена
                 if (jwtService.isTokenValid(jwt, userDetails)) {
-                    SecurityContext context = SecurityContextHolder.createEmptyContext();
-
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                             userDetails,
                             null,
@@ -65,11 +64,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     );
 
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    context.setAuthentication(authToken);
-                    SecurityContextHolder.setContext(context);
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+
+                    // Проверка, близок ли срок истечения токена
+                    long remainingTime = jwtService.getRemainingTime(jwt);
+                    if (remainingTime < REFRESH_THRESHOLD) {
+                        String newToken = jwtService.generateToken(userDetails);
+                        response.setHeader(HEADER_NAME, BEARER_PREFIX + newToken);
+                    }
                 }
             }
             filterChain.doFilter(request, response);
+
+        } catch (ExpiredJwtException e) {
+            response.sendError(HttpStatus.UNAUTHORIZED.value(), "Token is expired");
         } catch (InvalidTokenException e) {
             response.sendError(HttpStatus.FORBIDDEN.value(), e.getMessage());
         }

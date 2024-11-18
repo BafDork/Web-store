@@ -39,7 +39,6 @@ export default {
     },
 
     async addToCart({ commit }, { product, quantity }) {
-      console.log(product.id, quantity);
       await CartService.addToCart(product.id, quantity);
       commit('addItem', { product, quantity });
     },
@@ -50,9 +49,12 @@ export default {
     },
 
     async updateQuantity({ commit }, { productId, quantity }) {
-      console.log("store", productId, quantity);
       await CartService.updateQuantity(productId, quantity);
       commit('updateItemQuantity', { productId, quantity });
+    },
+
+    clearCart({ commit }) {
+      commit('setCart', []);
     }
   },
 

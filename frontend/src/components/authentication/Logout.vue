@@ -14,11 +14,15 @@
   
   <style scoped>
   .logout-button {
-    background: none;
-    color: #61dafb;
+    color: #22b6df;
     border: none;
     cursor: pointer;
     margin-left: 10px;
+    font-size: 1.1em;
+  }
+
+  .logout-button:hover {
+    text-decoration: underline;
   }
   </style>
   
