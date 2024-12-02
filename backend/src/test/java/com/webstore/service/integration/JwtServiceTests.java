@@ -1,4 +1,4 @@
-package com.webstore.authentication;
+package com.webstore.service.integration;
 
 import com.webstore.exceptions.InvalidTokenException;
 import com.webstore.helpers.TestUserHelper;

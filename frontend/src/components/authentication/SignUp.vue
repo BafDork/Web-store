@@ -1,65 +1,47 @@
 <template>
-  <div class="container mt-5">
+  <div class="registration-container mt-5">
     <h1 class="text-center mb-4">Регистрация</h1>
-    <form @submit.prevent="signUp" class="needs-validation" validate>
-      <!-- Имя -->
-      <div class="mb-3">
-        <label for="firstName" class="form-label">Имя</label>
-        <input 
-          v-model="firstName" 
-          type="text" 
-          id="firstName" 
-          class="form-control" 
-          placeholder="Введите ваше имя" 
-          required 
-        />
-        <div class="invalid-feedback">Пожалуйста, укажите имя.</div>
-      </div>
-
-      <!-- Фамилия -->
-      <div class="mb-3">
-        <label for="lastName" class="form-label">Фамилия</label>
-        <input 
-          v-model="lastName" 
-          type="text" 
-          id="lastName" 
-          class="form-control" 
-          placeholder="Введите вашу фамилию" 
-          required 
-        />
-        <div class="invalid-feedback">Пожалуйста, укажите фамилию.</div>
-      </div>
-
-      <!-- Электронная почта -->
-      <div class="mb-3">
-        <label for="email" class="form-label">Электронная почта</label>
-        <input 
-          v-model="email" 
-          type="email" 
-          id="email" 
-          class="form-control" 
-          placeholder="example@mail.com" 
-          required 
-        />
-        <div class="invalid-feedback">Пожалуйста, укажите корректный адрес электронной почты.</div>
-      </div>
-
-      <!-- Пароль -->
-      <div class="mb-3">
-        <label for="password" class="form-label">Пароль</label>
-        <input 
-          v-model="password" 
-          type="password" 
-          id="password" 
-          class="form-control" 
-          placeholder="Введите пароль" 
-          required 
-        />
-        <div class="invalid-feedback">Пожалуйста, укажите пароль.</div>
-      </div>
+    <form @submit.prevent="signUp" class="needs-validation" novalidate>
+      <!-- Поля формы -->
+      <FormInput
+        v-model="firstName"
+        label="Имя"
+        id="firstName"
+        type="text"
+        placeholder="Введите ваше имя"
+        :required="true"
+        error-message="Пожалуйста, укажите имя."
+      />
+      <FormInput
+        v-model="lastName"
+        label="Фамилия"
+        id="lastName"
+        type="text"
+        placeholder="Введите вашу фамилию"
+        :required="true"
+        error-message="Пожалуйста, укажите фамилию."
+      />
+      <FormInput
+        v-model="email"
+        label="Электронная почта"
+        id="email"
+        type="email"
+        placeholder="example@mail.com"
+        :required="true"
+        error-message="Пожалуйста, укажите корректный адрес электронной почты."
+      />
+      <FormInput
+        v-model="password"
+        label="Пароль"
+        id="password"
+        type="password"
+        placeholder="Введите пароль"
+        :required="true"
+        error-message="Пожалуйста, укажите пароль."
+      />
 
       <!-- Ошибка -->
-      <p v-if="errorMessage" class="text-danger" v-html="errorMessage"></p>
+      <p v-if="errorMessage" class="text-danger text-center" v-html="errorMessage"></p>
 
       <!-- Кнопка регистрации -->
       <button type="submit" class="btn btn-primary w-100">Зарегистрироваться</button>
@@ -68,9 +50,13 @@
 </template>
 
 <script>
+import FormInput from './FormInput.vue';
 import AuthService from '@/services/AuthService';
 
 export default {
+  components: {
+    FormInput,
+  },
   data() {
     return {
       firstName: '',
@@ -87,11 +73,14 @@ export default {
         await AuthService.signUp(this.email, this.password, this.firstName, this.lastName);
         this.$router.push('/auth/sign-in');
       } catch (error) {
-        if (error.response && error.response.data) {
-          this.errorMessage = error.response.data.message;
-        } else {
-          this.errorMessage = 'Ошибка регистрации';
-        }
+        this.handleError(error);
+      }
+    },
+    handleError(error) {
+      if (error.response && error.response.data) {
+        this.errorMessage = error.response.data.message;
+      } else {
+        this.errorMessage = 'Ошибка регистрации';
       }
     },
   },
@@ -99,7 +88,28 @@ export default {
 </script>
 
 <style scoped>
+.registration-container {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+}
+
 .text-danger {
   font-size: 0.9em;
+  margin-top: 10px;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  border: none;
+  padding: 10px 20px;
+  font-size: 1rem;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
 }
 </style>

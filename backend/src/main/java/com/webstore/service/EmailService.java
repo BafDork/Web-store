@@ -20,14 +20,18 @@ public class EmailService {
     private String mailFrom;
     private final JavaMailSender mailSender;
 
+    /**
+     * Отправляет письмо с подтверждением заказа пользователю.
+     * Формирует тело письма с информацией о заказе и отправляет его на указанный email.
+     *
+     * @param userEmail email пользователя для отправки письма
+     * @param order заказ, информацию о котором нужно отправить
+     */
     public void sendOrderConfirmation(String userEmail, Order order) {
         String subject = "Подтверждение вашего заказа №" + order.getId();
         StringBuilder messageContent = new StringBuilder();
 
-        messageContent
-                .append("<p>Дата заказа: ")
-                .append(order.getOrderDate())
-                .append("</p>");
+        messageContent.append("<p>Дата заказа: ").append(order.getOrderDate()).append("</p>");
         messageContent.append("<h3>Состав заказа:</h3>");
         messageContent.append("<ul>");
 
@@ -44,10 +48,7 @@ public class EmailService {
         }
 
         messageContent.append("</ul>");
-        messageContent
-                .append("<p>Общая сумма заказа: ")
-                .append(order.getTotalAmount())
-                .append(" руб.</p>");
+        messageContent.append("<p>Общая сумма заказа: ").append(order.getTotalAmount()).append(" руб.</p>");
         messageContent.append("<p>Спасибо за покупку!</p>");
 
         try {
@@ -58,6 +59,15 @@ public class EmailService {
         }
     }
 
+    /**
+     * Формирует и отправляет email-сообщение.
+     *
+     * @param to email получателя
+     * @param subject тема письма
+     * @param content содержание письма
+     * @throws MailException если не удается отправить письмо
+     * @throws MessagingException если произошла ошибка при формировании письма
+     */
     private void sendEmail(String to, String subject, String content) throws MailException, MessagingException {
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);

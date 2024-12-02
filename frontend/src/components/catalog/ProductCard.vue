@@ -1,8 +1,5 @@
 <template>
   <div class="product-card">
-    <!--
-    <img src="https://apple-store.net.ru/image/cache/catalog/accesories/iphone-14-pro-max/silicone-case-iphone-14-pro-max-temnaea-noc4-800x800.jpg" alt="Product Image" class="product-image" />
-    -->
     <img :src="product.imageUrl" alt="Product Image" class="product-image" />
     <div class="product-details">
       <h2 class="product-name">{{ product.name }}</h2>
@@ -10,22 +7,18 @@
     </div>
 
     <div class="product-stock">
-      <p>
-        <span :class="getAvailabilityClass(product.stock)">
-          {{ getAvailabilityMessage(product.stock) }}
-        </span>
-      </p>
+      <span :class="getAvailabilityClass(product.stock)">
+        {{ getAvailabilityMessage(product.stock) }}
+      </span>
     </div>
 
     <div class="price-and-cart">
       <div class="product-price">
         <p v-if="isAuthenticated && product.discountPrice !== null">
-          <p class="original-price">{{ formatPrice(product.price) }}</p>
-          <p class="discounted-price">{{ formatPrice(product.discountPrice) }}</p>
+          <span class="original-price">{{ formatPrice(product.price) }}</span>
+          <span class="discounted-price">{{ formatPrice(product.discountPrice) }}</span>
         </p>
-        <p v-else class="regular-price">
-          {{ formatPrice(product.price) }}
-        </p>
+        <p v-else class="regular-price">{{ formatPrice(product.price) }}</p>
       </div>
 
       <button 
@@ -44,6 +37,7 @@
     </div>
   </div>
 </template>
+
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
@@ -77,11 +71,15 @@ export default {
     },
 
     getAvailabilityMessage(stock) {
-      return stock > 10 ? "В наличии" : stock > 0 ? "Мало" : "Нет в наличии";
+      if (stock > 10) return "В наличии";
+      if (stock > 0) return "Мало";
+      return "Нет в наличии";
     },
 
     getAvailabilityClass(stock) {
-      return stock > 10 ? "in-stock" : stock > 0 ? "low-stock" : "out-of-stock";
+      if (stock > 10) return "in-stock";
+      if (stock > 0) return "low-stock";
+      return "out-of-stock";
     },
 
     formatPrice(price) {

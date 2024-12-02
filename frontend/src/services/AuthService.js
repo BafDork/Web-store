@@ -4,16 +4,28 @@ const API_URL = 'http://localhost:8080/auth';
 
 class AuthService {
   async login(email, password) {
-    await axios.post(`${API_URL}/sign-in`, { email, password });
+    try {
+      const response = await axios.post(`${API_URL}/sign-in`, { email, password });
+      return response.data;
+    } catch (error) {
+      console.error('Login error:', error);
+      throw error;
+    }
   }
 
   async signUp(email, password, firstName, lastName) {
-    await axios.post(`${API_URL}/sign-up`, {
-      firstName,
-      lastName,
-      email,
-      password
-    });
+    try {
+      const response = await axios.post(`${API_URL}/sign-up`, {
+        firstName,
+        lastName,
+        email,
+        password,
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Sign-up error:', error);
+      throw error;
+    }
   }
 
   logout() {
@@ -23,7 +35,10 @@ class AuthService {
   getToken() {
     return localStorage.getItem('token');
   }
+
+  setToken(token) {
+    localStorage.setItem('token', token);
+  }
 }
 
-// поправить на статик
 export default new AuthService();

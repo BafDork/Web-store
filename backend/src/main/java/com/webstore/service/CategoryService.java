@@ -18,11 +18,23 @@ public class CategoryService {
 
     private final CategoryRepository categoryRepository;
 
+    /**
+     * Получает категорию по её ID.
+     * Если категория не найдена, выбрасывается исключение ResourceNotFoundException.
+     *
+     * @param categoryId ID категории
+     * @return найденная категория
+     */
     public Category getCategoryById(Long categoryId) {
         return categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new ResourceNotFoundException("Категория не найдена с ID: " + categoryId));
     }
 
+    /**
+     * Получает все категории верхнего уровня (без родительской категории).
+     *
+     * @return список DTO объектов для категорий верхнего уровня
+     */
     public List<CategoryResponseDTO> getTopLevelCategories() {
         List<Category> categories = categoryRepository.findByParentIsNullOrderByNameAsc();
         return categories.stream()
@@ -30,18 +42,27 @@ public class CategoryService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Получает категорию и все её подкатегории (рекурсивно).
+     *
+     * @param categoryId ID категории
+     * @return множество категории и всех её подкатегорий
+     */
     public Set<Category> getCategoryWithAllSubCategories(Long categoryId) {
-        Set<Category> allSubCategories = new HashSet<>();
         Category category = getCategoryById(categoryId);
-        allSubCategories.add(category);
-        getSubCategories(category, allSubCategories);
+        Set<Category> allSubCategories = new HashSet<>();
+        addSubCategories(category, allSubCategories);
         return allSubCategories;
     }
 
-    private void getSubCategories(Category category, Set<Category> subCategories) {
-        for (Category subCategory : category.getSubCategories()) {
-            subCategories.add(subCategory);
-            getSubCategories(subCategory, subCategories);
-        }
+    /**
+     * Рекурсивно добавляет подкатегории в множество.
+     *
+     * @param category текущая категория
+     * @param subCategories множество подкатегорий
+     */
+    private void addSubCategories(Category category, Set<Category> subCategories) {
+        subCategories.add(category);
+        category.getSubCategories().forEach(subCategory -> addSubCategories(subCategory, subCategories));
     }
 }

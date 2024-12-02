@@ -1,216 +1,151 @@
 <template>
   <div class="cart-container">
+    <!-- Список товаров -->
     <div class="cart-items">
       <h2 class="cart-label">Корзина ({{ cartCount }} товара)</h2>
-      <ul v-if="cartItems && cartItems.length" class="cart-products">
-        <li v-for="item in cartItems" :key="item.product.id" class="product-card">
-          <!--
-          <img src="https://apple-store.net.ru/image/cache/catalog/accesories/iphone-14-pro-max/silicone-case-iphone-14-pro-max-temnaea-noc4-800x800.jpg" alt="Product Image" class="product-image" />
-          -->
-          <img :src="item.product.imageUrl" alt="Product Image" class="product-image" />
-          <h3 class="product-name">{{ item.product.name }}</h3>
-          <div class="controls">
-            <div class="quantity-control">
-              <button @click="decreaseQuantity(item)" class="btn btn-outline-danger btn-sm">-</button>
-              <span class="quantity-display">{{ item.quantity }}</span>
-              <button @click="increaseQuantity(item)" :disabled="item.quantity >= item.product.stock" class="btn btn-outline-success btn-sm">+</button>
-            </div>
-            <button @click="removeFromCartAction(item.product.id)" class="btn btn-danger btn-sm">Удалить</button>
-          </div>
-          <p class="product-price">{{ formatPrice(finalPrice(item.product) * item.quantity) }}</p>
-        </li>
+      <ul v-if="cartItems.length" class="cart-products">
+        <ProductCard
+          v-for="item in cartItems"
+          :key="item.product.id"
+          :item="item"
+          @increaseQuantity="changeQuantity(item.product.id, item.quantity + 1)"
+          @decreaseQuantity="changeQuantity(item.product.id, item.quantity - 1)"
+          @remove="removeFromCartAction(item.product.id)"
+        />
       </ul>
-      <p v-else>Корзина пуста</p>
+      <p v-else class="empty-cart">Корзина пуста</p>
     </div>
 
+    <!-- Сводка -->
     <div class="cart-summary">
       <h4>Ваш заказ:</h4>
-      <div class="row align-items-center">
-        <div class="col-md-6 text-start">
-          <p><strong>Количество:</strong></p>
-          <p><strong>Итого:</strong></p>
-        </div>
-        <div class="col-md-6 text-end">
-          <p>{{ cartCount }}</p>
-          <p>{{ formatPrice(cartTotal) }}</p>
-        </div>
+      <div class="summary-details">
+        <p><strong>Количество:</strong> {{ cartCount }}</p>
+        <p><strong>Итого:</strong> {{ formatPrice(cartTotal) }}</p>
       </div>
-      <div class="text-center mt-4">
-        <button @click="checkout" :disabled="!cartItems.length" class="btn btn-success btn-lg">Оформить заказ</button>
-      </div>
+      <button
+        @click="checkout"
+        :disabled="!cartItems.length"
+        class="btn btn-success"
+      >
+        Оформить заказ
+      </button>
     </div>
   </div>
 </template>
 
-
-
 <script>
 import { mapGetters, mapActions } from 'vuex';
+import ProductCard from './ProductCard.vue'; // Вынесли карточку товара
 import { formatPrice } from '@/utils/formatPrice';
 import OrderService from '@/services/OrderService';
 
 export default {
+  components: { ProductCard },
   computed: {
     ...mapGetters('cart', ['cartItems', 'cartTotal', 'cartCount']),
   },
-
   methods: {
     ...mapActions('cart', ['loadCart', 'removeFromCart', 'updateQuantity', 'clearCart']),
 
-    increaseQuantity(item) {
-      const newQuantity = item.quantity + 1;
-      if (newQuantity > item.product.stock) {
-        this.updateQuantity({ productId: item.product.id, quantity: item.product.stock });
-      } else {
-        this.updateQuantity({ productId: item.product.id, quantity: newQuantity });
-      }
-    },
-
-    decreaseQuantity(item) {
-      const newQuantity = item.quantity - 1;
-      if (newQuantity <= 0) {
-        this.removeFromCart({ productId: item.product.id });
-      } else {
-        this.updateQuantity({ productId: item.product.id, quantity: newQuantity });
-      }
-    },
-
-    removeFromCartAction(productId) {
-      this.removeFromCart({ productId });
-    },
-
-    async fetchCart() {
+    async changeQuantity(productId, newQuantity) {
       try {
-        await this.loadCart();
+        if (newQuantity <= 0) {
+          await this.removeFromCart({ productId });
+        } else {
+          await this.updateQuantity({ productId, quantity: newQuantity });
+        }
       } catch (error) {
-        console.error('Ошибка при загрузке корзины:', error);
+        console.error('Ошибка изменения количества:', error);
+      }
+    },
+
+    async removeFromCartAction(productId) {
+      try {
+        await this.removeFromCart({ productId });
+      } catch (error) {
+        console.error('Ошибка удаления из корзины:', error);
       }
     },
 
     async checkout() {
       try {
         const response = await OrderService.createOrder();
-        alert('Заказ успешно оформлен! Номер заказа: ' + response.orderId);
-        this.clearCart()
+        alert(`Заказ успешно оформлен! Номер заказа: ${response.orderId}`);
+        await this.clearCart();
       } catch (error) {
-        console.error('Ошибка при оформлении заказа:', error);
-        alert('Ошибка при оформлении заказа. Попробуйте позже.');
+        console.error('Ошибка оформления заказа:', error);
+        alert('Не удалось оформить заказ. Попробуйте позже.');
       }
-    },
-
-    finalPrice(product) {
-      return product.discountPrice || product.price;
     },
 
     formatPrice(price) {
       return formatPrice(price);
     },
   },
-
   mounted() {
-    this.fetchCart();
+    this.loadCart();
   },
 };
 </script>
 
 <style scoped>
-.cart-label {
-  font-size: 1.5em;
-  font-weight: bold;
-  margin-bottom: 20px;
+:root {
+  --primary-color: #56a841;
+  --secondary-color: #f9f9f9;
+  --border-color: #ddd;
+  --font-color: #000;
 }
 
 .cart-container {
   display: flex;
-  gap: 16px;
+  gap: 20px;
   margin: 20px;
-}
-
-.cart-products {
-  list-style: none;
-  padding-left: 0;
 }
 
 .cart-items {
   flex: 3;
-  background-color: #f9f9f9;
-  border: 1px solid #ddd;
+  background-color: var(--secondary-color);
+  border: 1px solid var(--border-color);
   border-radius: 5px;
   padding: 16px;
 }
 
-.product-card {
-  display: flex;
-  align-items: center;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  padding: 16px;
-  margin-bottom: 12px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.product-image {
-  width: 100px;
-  height: 100px;
-  object-fit: cover;
-  border-radius: 5px;
-  margin-right: 16px;
-}
-
-.product-name {
-  font-size: 1.2em;
-  font-weight: bold;
-  color: #56a841;
-  flex: 2;
-}
-
-.controls {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-}
-
-.quantity-control {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.quantity-display {
-  font-size: 1.1em;
+.cart-label {
+  font-size: 1.5rem;
+  margin-bottom: 16px;
   font-weight: bold;
 }
 
-.product-price {
-  font-size: 1.2em;
-  font-weight: bold;
-  color: #000;
-  flex: 1;
-  text-align: right;
+.cart-products {
+  list-style: none;
+  padding: 0;
+}
+
+.empty-cart {
+  font-size: 1.2rem;
+  color: var(--font-color);
 }
 
 .cart-summary {
   flex: 1;
-  background-color: #f9f9f9;
-  border: 1px solid #ddd;
+  background-color: var(--secondary-color);
+  border: 1px solid var(--border-color);
   border-radius: 5px;
-  padding: 20px;
-  align-self: flex-start;
+  padding: 16px;
 }
 
 .cart-summary h4 {
-  font-size: 1.3em;
-  font-weight: bold;
+  font-size: 1.3rem;
   margin-bottom: 16px;
 }
 
-.cart-summary .btn-success {
-  margin-top: 16px;
+.summary-details {
+  font-size: 1rem;
+  margin-bottom: 20px;
+}
+
+.btn-success {
   width: 100%;
 }
 </style>
-
-

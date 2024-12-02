@@ -24,13 +24,16 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final EmailService emailService;
 
+    /**
+     * Оформление заказа: проверка наличия товаров на складе, создание заказа и отправка подтверждения.
+     *
+     * @return DTO с информацией о заказе
+     */
     public OrderResponseDTO checkout() {
         Cart cart = cartService.getCurrentUserCart();
-
         validateStockForCart(cart);
         Order order = createOrderFromCart(cart);
         sendOrderConfirmation(order);
-
         cartService.clearCart(cart);
         return new OrderResponseDTO(order.getId());
     }
@@ -87,8 +90,8 @@ public class OrderService {
             orderItem.setPrice(price);
             orderItem.setOrder(order);
             orderItems.add(orderItem);
-
         }
+
         order.setItems(orderItems);
         order.setTotalAmount(totalAmount);
         saveOrder(order);
@@ -115,4 +118,3 @@ public class OrderService {
         orderRepository.save(order);
     }
 }
-

@@ -11,21 +11,27 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
 
+    /**
+     * Получение пользователя по ID.
+     *
+     * @param userId ID пользователя
+     * @return найденный пользователь
+     */
     public User getUserById(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Пользователь не найден с ID: " + userId));
     }
 
     /**
-     * Сохранение пользователя
+     * Сохранение пользователя.
      *
+     * @param user пользователь для сохранения
      * @return сохраненный пользователь
      */
     public User save(User user) {
@@ -33,9 +39,11 @@ public class UserService {
     }
 
     /**
-     * Создание пользователя
+     * Создание нового пользователя.
      *
+     * @param user новый пользователь
      * @return созданный пользователь
+     * @throws UserAlreadyExistsException если email уже существует
      */
     public User create(User user) {
         if (userRepository.existsByEmail(user.getEmail())) {
@@ -45,9 +53,11 @@ public class UserService {
     }
 
     /**
-     * Получение пользователя по электронной почте
+     * Получение пользователя по email.
      *
-     * @return пользователь
+     * @param email email пользователя
+     * @return найденный пользователь
+     * @throws UsernameNotFoundException если пользователь не найден
      */
     public User getByEmail(String email) {
         return userRepository.findByEmail(email)
@@ -55,8 +65,9 @@ public class UserService {
     }
 
     /**
-     * Удаление пользователя по электронной почте
+     * Удаление пользователя по email.
      *
+     * @param email email пользователя для удаления
      */
     public void deleteByEmail(String email) {
         User user = getByEmail(email);
@@ -64,18 +75,16 @@ public class UserService {
     }
 
     /**
-     * Получение пользователя по имени пользователя
-     * <p>
-     * Нужен для Spring Security
+     * Получение пользователя для Spring Security.
      *
-     * @return пользователь
+     * @return UserDetailsService
      */
     public UserDetailsService userDetailsService() {
         return this::getByEmail;
     }
 
     /**
-     * Получение текущего пользователя
+     * Получение текущего аутентифицированного пользователя.
      *
      * @return текущий пользователь
      */

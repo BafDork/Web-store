@@ -25,17 +25,17 @@ export default {
 
   computed: {
     ...mapGetters('user', ['isAuthenticated', 'userName']),
-    ...mapGetters('cart', ['cart', 'cartCount']),
+    ...mapGetters('cart', ['cartCount']),
 
     userDisplayName() {
-      const [firstName, lastName] = this.userName.split(" ");
+      const [firstName, lastName] = this.userName.split(' ');
       return `${lastName} ${firstName ? firstName[0] + '.' : ''}`;
-    }
+    },
   },
 
   methods: {
     ...mapActions('catalog', ['toggleCatalog']),
-
+    
     toggleCatalogAction() {
       if (this.$route.path === '/') {
         this.toggleCatalog();
@@ -47,47 +47,67 @@ export default {
 };
 </script>
 
-  
-  <style scoped>
-  header {
-    border-bottom: 1px solid #ddd;
-    padding: 20px;
-  }
-  
-  .catalog-link {
-    cursor: pointer;
-    font-weight: bold;
-    color: #f54242;
-  }
-
-  .catalog-link:hover {
-    text-decoration: underline;
+<style scoped>
+header {
+  border-bottom: 1px solid #ddd;
+  padding: 20px;
+  background-color: #f8f9fa;
 }
-  
-  nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .nav-item {
-    margin-right: 20px;
-    text-decoration: none;
-    color: #000000;
-  }
-  
-  .nav-item:hover {
-    text-decoration: underline;
-  }
-  
-  .nav-right {
-    display: flex;
-    align-items: center;
-    font-size: 1.1em;
-  }
 
-  .user-info {
-    font-weight: bold;
-  }
-  </style>
-  
+.catalog-link {
+  cursor: pointer;
+  font-weight: bold;
+  color: #f54242;
+  transition: color 0.3s ease, text-decoration 0.3s ease;
+}
+
+.catalog-link:hover {
+  text-decoration: underline;
+  color: #e03636;
+}
+
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav-item {
+  margin-right: 20px;
+  text-decoration: none;
+  color: #000;
+  font-weight: normal;
+  transition: color 0.3s ease;
+}
+
+.nav-item:hover {
+  text-decoration: underline;
+  color: #007bff;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  font-size: 1.1em;
+}
+
+.user-info {
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.user-info button {
+  margin-left: 10px;
+  background: none;
+  border: none;
+  color: #f54242;
+  cursor: pointer;
+  font-size: 1.1em;
+}
+
+.user-info button:hover {
+  text-decoration: underline;
+}
+</style>

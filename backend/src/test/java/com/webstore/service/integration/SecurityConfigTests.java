@@ -1,4 +1,4 @@
-package com.webstore.authentication;
+package com.webstore.service.integration;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

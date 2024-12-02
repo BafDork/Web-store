@@ -1,28 +1,45 @@
 <template>
-    <button @click="logout" class="logout-button">Выйти</button>
-  </template>
-  
-  <script>
-  import { mapActions } from 'vuex';
-  
-  export default {
-    methods: {
-      ...mapActions('user', ['logout']),
-    },
-  };
-  </script>
-  
-  <style scoped>
-  .logout-button {
-    color: #22b6df;
-    border: none;
-    cursor: pointer;
-    margin-left: 10px;
-    font-size: 1.1em;
-  }
+  <button 
+    @click="logoutAction" 
+    class="logout-button"
+    aria-label="Выйти из аккаунта"
+  >
+    Выйти
+  </button>
+</template>
 
-  .logout-button:hover {
-    text-decoration: underline;
-  }
-  </style>
-  
+<script>
+import { mapActions } from 'vuex';
+
+export default {
+  methods: {
+    ...mapActions('user', ['logout']),
+    
+    logoutAction() {
+      this.logout();
+      this.$router.push('/');
+    },
+  },
+};
+</script>
+
+<style scoped>
+:root {
+  --primary-color: #22b6df;
+}
+
+.logout-button {
+  color: var(--primary-color);
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-left: 10px;
+  font: inherit;
+  transition: color 0.3s ease, text-decoration 0.3s ease;
+}
+
+.logout-button:hover {
+  color: darken(var(--primary-color), 10%);
+  text-decoration: underline;
+}
+</style>

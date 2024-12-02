@@ -35,7 +35,7 @@ export default {
   actions: {
     async loadCart({ commit }) {
       const response = await CartService.getCart();
-      commit('setCart', response.data);
+      commit('setCart', response);
     },
 
     async addToCart({ commit }, { product, quantity }) {
@@ -60,7 +60,7 @@ export default {
 
   getters: {
     cartItems: state => state.cart,
-    cartCount: state => state.cart.length,
+    cartCount: state => state.cart.reduce((count, item) => count + item.quantity, 0),
     cartTotal: state => state.cart.reduce((total, item) => total + ((item.product.price || item.product.discountPrice) * item.quantity), 0),
     isProductInCart: (state) => (productId) => (state.cart && state.cart.some(item => item.product.id === productId)),
   }
