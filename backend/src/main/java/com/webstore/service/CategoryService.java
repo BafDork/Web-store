@@ -1,5 +1,6 @@
 package com.webstore.service;
 
+import com.webstore.dto.request.CategoryRequestDTO;
 import com.webstore.dto.response.CategoryResponseDTO;
 import com.webstore.exceptions.ResourceNotFoundException;
 import com.webstore.model.Category;
@@ -64,5 +65,25 @@ public class CategoryService {
     private void addSubCategories(Category category, Set<Category> subCategories) {
         subCategories.add(category);
         category.getSubCategories().forEach(subCategory -> addSubCategories(subCategory, subCategories));
+    }
+
+    /**
+     * Добавляет новую категорию.
+     *
+     * @param categoryRequestDTO запрос для создания категории
+     * @return созданная категория
+     */
+    public CategoryResponseDTO addCategory(CategoryRequestDTO categoryRequestDTO) {
+        Category parentCategory = categoryRequestDTO.getParentId() != null
+                ? getCategoryById(categoryRequestDTO.getParentId())
+                : null;
+
+        Category category = new Category();
+        category.setName(categoryRequestDTO.getName());
+        category.setParent(parentCategory);
+
+        category = categoryRepository.save(category);
+
+        return new CategoryResponseDTO(category);
     }
 }

@@ -1,6 +1,7 @@
 import axios from '@/plugins/axios';
 
 const API_URL = 'http://localhost:8080/api/category';
+const ADMIN_URL = 'http://localhost:8080/admin/category';
 
 class CategoryService {
   
@@ -10,6 +11,16 @@ class CategoryService {
       return response.data;
     } catch (error) {
       console.error('Ошибка при получении верхнего уровня категорий:', error);
+      throw error;
+    }
+  }
+
+  static async addCategory(category) {
+    try {
+      const response = await axios.post(`${ADMIN_URL}/add`, category);
+      return response.data;
+    } catch (error) {
+      console.error('Ошибка при добавлении категории:', error);
       throw error;
     }
   }

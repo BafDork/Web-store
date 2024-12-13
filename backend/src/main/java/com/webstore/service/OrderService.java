@@ -3,6 +3,7 @@ package com.webstore.service;
 import com.webstore.dto.response.OrderResponseDTO;
 import com.webstore.exceptions.OutOfStockException;
 import com.webstore.model.Cart;
+import com.webstore.model.CartItem;
 import com.webstore.model.Order;
 import com.webstore.model.OrderItem;
 import com.webstore.model.Product;
@@ -31,11 +32,15 @@ public class OrderService {
      */
     public OrderResponseDTO checkout() {
         Cart cart = cartService.getCurrentUserCart();
-        validateStockForCart(cart);
-        Order order = createOrderFromCart(cart);
-        sendOrderConfirmation(order);
-        cartService.clearCart(cart);
-        return new OrderResponseDTO(order.getId());
+        if (!cartService.isCartEmpty(cart)) {
+            validateStockForCart(cart);
+            Order order = createOrderFromCart(cart);
+            sendOrderConfirmation(order);
+            cartService.clearCart(cart);
+            return new OrderResponseDTO(order.getId());
+        } else {
+            return new OrderResponseDTO(null);
+        }
     }
 
     /**
@@ -44,12 +49,11 @@ public class OrderService {
      * @param cart текущая корзина пользователя
      */
     public void validateStockForCart(Cart cart) {
-        List<Product> products = cart.getProducts();
-        List<Integer> quantities = cart.getQuantities();
+        List<CartItem> cartItems = cart.getItems();
 
-        for (int i = 0; i < products.size(); i++) {
-            Product product = products.get(i);
-            int requestedQuantity = quantities.get(i);
+        for (CartItem cartItem : cartItems) {
+            Product product = cartItem.getProduct();
+            int requestedQuantity = cartItem.getQuantity();
 
             if (product.getStock() < requestedQuantity) {
                 throw new OutOfStockException("Товара " + product.getName() + " недостаточно на складе.");
@@ -64,8 +68,7 @@ public class OrderService {
      * @return созданный заказ
      */
     public Order createOrderFromCart(Cart cart) {
-        List<Product> products = cart.getProducts();
-        List<Integer> quantities = cart.getQuantities();
+        List<CartItem> cartItems = cart.getItems();
 
         Order order = new Order();
         order.setUser(userService.getCurrentUser());
@@ -74,9 +77,9 @@ public class OrderService {
         List<OrderItem> orderItems = new ArrayList<>();
         double totalAmount = 0.0;
 
-        for (int i = 0; i < products.size(); i++) {
-            Product product = products.get(i);
-            int requestedQuantity = quantities.get(i);
+        for (CartItem cartItem : cartItems) {
+            Product product = cartItem.getProduct();
+            int requestedQuantity = cartItem.getQuantity();
 
             product.setStock(product.getStock() - requestedQuantity);
             productService.saveProduct(product);

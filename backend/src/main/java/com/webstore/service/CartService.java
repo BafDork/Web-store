@@ -3,6 +3,7 @@ package com.webstore.service;
 import com.webstore.dto.response.CartProductResponseDTO;
 import com.webstore.dto.response.ProductResponseDTO;
 import com.webstore.model.Cart;
+import com.webstore.model.CartItem;
 import com.webstore.model.Product;
 import com.webstore.model.User;
 import com.webstore.repository.CartRepository;
@@ -45,12 +46,11 @@ public class CartService {
         Cart cart = getCurrentUserCart();
         List<CartProductResponseDTO> cartProducts = new ArrayList<>();
 
-        List<Product> products = cart.getProducts();
-        List<Integer> quantities = cart.getQuantities();
+        List<CartItem> cartItems = cart.getItems();
 
-        for (int i = 0; i < products.size(); i++) {
-            Product product = products.get(i);
-            int quantity = quantities.get(i);
+        for (CartItem cartItem : cartItems) {
+            Product product = cartItem.getProduct();
+            int quantity = cartItem.getQuantity();
             cartProducts.add(new CartProductResponseDTO(
                     new ProductResponseDTO(product),
                     quantity
@@ -94,7 +94,7 @@ public class CartService {
     public void updateProductQuantity(Long productId, int quantity) {
         Cart cart = getCurrentUserCart();
         Product product = productService.getProductById(productId);
-        cart.updateProduct(product, quantity);
+        cart.updateProductQuantity(product, quantity);
         saveCart(cart);
     }
 
@@ -104,9 +104,18 @@ public class CartService {
      * @param cart корзина пользователя
      */
     public void clearCart(Cart cart) {
-        cart.getProducts().clear();
-        cart.getQuantities().clear();
+        cart.getItems().clear();
         saveCart(cart);
+    }
+
+    /**
+     * Проверяет, пуста ли корзина.
+     *
+     * @param cart корзина для проверки
+     * @return true, если корзина пуста, иначе false
+     */
+    public boolean isCartEmpty(Cart cart) {
+        return cart.getItems().isEmpty();
     }
 
     /**

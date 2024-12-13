@@ -51,8 +51,10 @@ class CartServiceTest {
     void setUp() {
         mocks = MockitoAnnotations.openMocks(this);
 
-        user = new User(1L, "Test", "User", "test@example.com", "password", Role.ROLE_USER);
-        product = new Product(1L, "Product1", "Description", 100.0, null, 1, "Image", Collections.emptySet());
+        user = new User(1L, "Test", "User", "test@example.com",
+                "password", Role.ROLE_USER);
+        product = new Product(1L, "Product1", "Description", 100.0,
+                null, 1, "Image", Collections.emptySet());
         cart = new Cart();
         cart.setUser(user);
     }
@@ -119,8 +121,8 @@ class CartServiceTest {
 
         cartService.addProductToCart(1L, 3);
 
-        assertEquals(1, cart.getProducts().size());
-        assertEquals(3, cart.getQuantities().get(0));
+        assertEquals(1, cart.getItems().size());
+        assertEquals(3, cart.getItems().get(0).getQuantity());
     }
 
     /**
@@ -135,7 +137,7 @@ class CartServiceTest {
 
         cartService.removeProductFromCart(1L);
 
-        assertTrue(cart.getProducts().isEmpty());
+        assertTrue(cart.getItems().isEmpty());
     }
 
     /**
@@ -150,7 +152,7 @@ class CartServiceTest {
 
         cartService.updateProductQuantity(1L, 5);
 
-        assertEquals(5, cart.getQuantities().get(0));
+        assertEquals(5, cart.getItems().get(0).getQuantity());
     }
 
     /**
@@ -164,8 +166,7 @@ class CartServiceTest {
 
         cartService.clearCart(cart);
 
-        assertTrue(cart.getProducts().isEmpty());
-        assertTrue(cart.getQuantities().isEmpty());
+        assertTrue(cart.getItems().isEmpty());
     }
 
     /**

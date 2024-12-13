@@ -1,7 +1,6 @@
 package com.webstore.controller;
 
 import com.webstore.dto.response.CartProductResponseDTO;
-import com.webstore.model.Cart;
 import com.webstore.dto.request.CartProductRequestDTO;
 import com.webstore.service.CartService;
 import lombok.RequiredArgsConstructor;

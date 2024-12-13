@@ -62,9 +62,8 @@ class CategoryServiceTest {
 
         when(categoryRepository.findById(categoryId)).thenReturn(Optional.empty());
 
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
-            categoryService.getCategoryById(categoryId);
-        });
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
+                () -> categoryService.getCategoryById(categoryId));
 
         assertEquals("Категория не найдена с ID: " + categoryId, exception.getMessage());
     }

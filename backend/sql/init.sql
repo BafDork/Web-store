@@ -42,20 +42,14 @@ CREATE TABLE product_categories (
     FOREIGN KEY (category_id) REFERENCES categories (id) ON DELETE CASCADE
 );
 
--- Создание таблицы для связывания товаров в корзинах
+-- Создание объединённой таблицы товаров в корзине
 CREATE TABLE cart_items (
+    id SERIAL PRIMARY KEY,
     cart_id INT NOT NULL,
     product_id INT NOT NULL,
-    PRIMARY KEY (cart_id, product_id),
+    quantity INT NOT NULL DEFAULT 1,
     FOREIGN KEY (cart_id) REFERENCES shopping_carts (id) ON DELETE CASCADE,
     FOREIGN KEY (product_id) REFERENCES products (id) ON DELETE CASCADE
-);
-
--- Создание таблицы для количеств товаров в корзине
-CREATE TABLE cart_item_quantities (
-    cart_id INT NOT NULL,
-    quantity INT NOT NULL,
-    FOREIGN KEY (cart_id) REFERENCES shopping_carts (id) ON DELETE CASCADE
 );
 
 -- Создание таблицы заказов
@@ -75,6 +69,18 @@ CREATE TABLE order_items (
     quantity INT NOT NULL,
     price DECIMAL(10, 2) NOT NULL,
     FOREIGN KEY (order_id) REFERENCES orders (id) ON DELETE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES products (id) ON DELETE CASCADE
+);
+
+-- Создание таблицы для комментариев и оценок товаров
+CREATE TABLE product_reviews (
+    id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL,
+    product_id INT NOT NULL,
+    comment TEXT,
+    rating INT CHECK (rating >= 1 AND rating <= 5),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
     FOREIGN KEY (product_id) REFERENCES products (id) ON DELETE CASCADE
 );
 

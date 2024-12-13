@@ -18,6 +18,12 @@ public class ProductController {
 
     private final ProductService productService;
 
+    @GetMapping("/{productId}")
+    public ResponseEntity<ProductResponseDTO> getProductById(@PathVariable Long productId) {
+        ProductResponseDTO product = productService.findProductById(productId);
+        return ResponseEntity.ok(product);
+    }
+
     @GetMapping("/all")
     public ResponseEntity<List<ProductResponseDTO>> getAllProducts() {
         List<ProductResponseDTO> products = productService.findAllProducts();

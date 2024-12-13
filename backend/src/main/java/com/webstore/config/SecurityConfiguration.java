@@ -49,6 +49,7 @@ public class SecurityConfiguration {
                         .antMatchers("/auth/**").permitAll()
                         .antMatchers("/api/category/**").permitAll()
                         .antMatchers("/api/product/**").permitAll()
+                        .antMatchers("/api/review/**").permitAll()
                         .antMatchers("/endpoint", "/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))

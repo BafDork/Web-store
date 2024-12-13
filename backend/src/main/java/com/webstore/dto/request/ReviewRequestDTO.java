@@ -5,9 +5,8 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class CartProductRequestDTO {
+public class ReviewRequestDTO {
     private Long productId;
-    private int quantity;
+    private String text;
+    private int rating;
 }
-
-

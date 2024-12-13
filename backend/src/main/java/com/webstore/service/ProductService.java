@@ -32,6 +32,17 @@ public class ProductService {
     }
 
     /**
+     * Получает продукт по его ID и преобразует его в DTO-объект.
+     *
+     * @param productId идентификатор продукта
+     * @return объект ProductResponseDTO
+     */
+    public ProductResponseDTO findProductById(Long productId) {
+        Product product = getProductById(productId);
+        return new ProductResponseDTO(product);
+    }
+
+    /**
      * Получает список всех продуктов и преобразует их в DTO-объекты.
      *
      * @return список объектов ProductResponseDTO

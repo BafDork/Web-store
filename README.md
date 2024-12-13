@@ -9,7 +9,7 @@ Before you begin, ensure that you have the following installed on your system:
 
 ## Running the Application with Docker Compose
 
-Once the secret is set up, you can run the application using Docker Compose.
+You can run the application using Docker Compose.
 
 ### Steps to Run
 

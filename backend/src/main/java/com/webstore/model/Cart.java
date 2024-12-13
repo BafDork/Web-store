@@ -6,71 +6,61 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Column;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.FetchType;
-import javax.persistence.ElementCollection;
-import javax.persistence.CollectionTable;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 
 
 @Entity
-@Builder
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Table(name = "shopping_carts")
 public class Cart {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToMany
-    @JoinTable(
-            name = "cart_items",
-            joinColumns = @JoinColumn(name = "cart_id"),
-            inverseJoinColumns = @JoinColumn(name = "product_id")
-    )
-    private List<Product> products = new ArrayList<>();
-
-    @ElementCollection
-    @CollectionTable(name = "cart_item_quantities", joinColumns = @JoinColumn(name = "cart_id"))
-    @Column(name = "quantity")
-    private List<Integer> quantities = new ArrayList<>();
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CartItem> items = new ArrayList<>();
 
     public void addProduct(Product product, int quantity) {
-        this.products.add(product);
-        this.quantities.add(quantity);
+        for (CartItem item : items) {
+            if (item.getProduct().equals(product)) {
+                item.setQuantity(item.getQuantity() + quantity);
+                return;
+            }
+        }
+        CartItem newItem = new CartItem(null, this, product, quantity);
+        items.add(newItem);
     }
 
     public void removeProduct(Product product) {
-        int index = this.products.indexOf(product);
-        if (index >= 0) {
-            this.products.remove(index);
-            this.quantities.remove(index);
-        }
+        items.removeIf(item -> item.getProduct().equals(product));
     }
 
-    public void updateProduct(Product product, int quantity) {
-        int index = this.products.indexOf(product);
-        if (index >= 0) {
-            this.quantities.set(index, quantity);
+    public void updateProductQuantity(Product product, int quantity) {
+        for (CartItem item : items) {
+            if (item.getProduct().equals(product)) {
+                item.setQuantity(quantity);
+                return;
+            }
         }
     }
 }

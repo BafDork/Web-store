@@ -3,6 +3,7 @@ package com.webstore.service.unit;
 import com.webstore.dto.response.OrderResponseDTO;
 import com.webstore.exceptions.OutOfStockException;
 import com.webstore.model.Cart;
+import com.webstore.model.CartItem;
 import com.webstore.model.Order;
 import com.webstore.model.Product;
 import com.webstore.model.User;
@@ -50,8 +51,7 @@ class OrderServiceTest {
         product.setStock(1);
 
         Cart cart = new Cart();
-        cart.setProducts(Collections.singletonList(product));
-        cart.setQuantities(Collections.singletonList(2));
+        cart.setItems(Collections.singletonList(new CartItem(1L, cart, product, 2)));
 
         OutOfStockException exception = assertThrows(OutOfStockException.class, () -> orderService.validateStockForCart(cart));
 
@@ -70,8 +70,7 @@ class OrderServiceTest {
         product.setStock(5);
 
         Cart cart = new Cart();
-        cart.setProducts(Collections.singletonList(product));
-        cart.setQuantities(Collections.singletonList(2));
+        cart.setItems(Collections.singletonList(new CartItem(1L, cart, product, 2)));
 
         User user = new User();
         user.setId(1L);
@@ -116,8 +115,7 @@ class OrderServiceTest {
         product.setStock(5);
 
         Cart cart = new Cart();
-        cart.setProducts(Collections.singletonList(product));
-        cart.setQuantities(Collections.singletonList(2));
+        cart.setItems(Collections.singletonList(new CartItem(1L, cart, product, 2)));
 
         User user = new User();
         user.setId(1L);
