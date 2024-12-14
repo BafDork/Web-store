@@ -28,7 +28,6 @@
 <style scoped>
 .product-list {
   justify-content: space-between;
-  gap: 20px;
   margin: 16px;
 }
 

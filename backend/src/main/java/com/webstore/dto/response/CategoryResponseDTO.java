@@ -13,28 +13,14 @@ import java.util.stream.Collectors;
 public class CategoryResponseDTO {
     private Long id;
     private String name;
-    private List<SubCategoryDTO> subCategories;
+    private List<CategoryResponseDTO> subCategories;
 
     public CategoryResponseDTO(Category category) {
-        List<SubCategoryDTO> subCategories = category.getSubCategories().stream()
-                .sorted(Comparator.comparing(Category::getName))
-                .map(SubCategoryDTO::new)
-                .collect(Collectors.toList());
-
         this.id = category.getId();
         this.name = category.getName();
-        this.subCategories = subCategories;
-    }
-
-    @Data
-    @AllArgsConstructor
-    public static class SubCategoryDTO {
-        private Long id;
-        private String name;
-
-        public SubCategoryDTO(Category category) {
-            this.id = category.getId();
-            this.name = category.getName();
-        }
+        this.subCategories = category.getSubCategories().stream()
+                .sorted(Comparator.comparing(Category::getName))
+                .map(CategoryResponseDTO::new)
+                .collect(Collectors.toList());
     }
 }

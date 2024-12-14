@@ -1,35 +1,40 @@
 <template>
-    <div>
-      <div v-if="breadcrumbPath.length" class="breadcrumb">
-        <span @click="navigateToHome" class="breadcrumb-item">Главная </span>
-        <span 
-          v-for="(category, index) in breadcrumbPath" 
-          :key="index" 
-          @click="navigateToBreadcrumb(category.id)" 
-          class="breadcrumb-item">
-          {{ category.name }}
-        </span>
-      </div>
-  
-      <div class="category-and-controls">
-        <div class="current-category">
-          <strong>{{ currentCategoryName }}</strong> ({{ products.length }} товаров)
-        </div>
-        <div class="sorting-control">
-          <Controls ref="controls" @sort-change="onSortChange" />
-        </div>
-      </div>
-  
-      <CategoryList 
-        v-if="showCatalog"
-        :categories="categories" 
-        @category-selected="onCategorySelected" 
-        :active-category="currentCategoryId" 
-      />
-      <ProductList :products="products" />
+  <div class="container">
+    <div v-if="breadcrumbPath.length" class="breadcrumb">
+      <span @click="navigateToHome" class="breadcrumb-item">Главная </span>
+      <span 
+        v-for="(category, index) in breadcrumbPath" 
+        :key="index" 
+        @click="navigateToBreadcrumb(category.id)" 
+        class="breadcrumb-item">
+        {{ category.name }}
+      </span>
     </div>
-</template>  
-  
+
+    <div class="category-and-controls">
+      <div class="current-category">
+        <strong>{{ currentCategoryName }}</strong> ({{ products.length }} товаров)
+      </div>
+      <div class="sorting-control">
+        <Controls ref="controls" @sort-change="onSortChange" />
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="category-menu">
+        <CategoryList 
+          :categories="categories" 
+          @category-selected="onCategorySelected" 
+          :active-category="currentCategoryId" 
+        />
+      </div>
+      <div class="product-list">
+        <ProductList :products="filteredProducts" />
+      </div>
+    </div>
+  </div>
+</template>
+
 <script>
 import { mapGetters, mapActions } from 'vuex';
 import Controls from './Controls.vue';
@@ -42,11 +47,17 @@ export default {
   data() {
     return {
       products: [],
+      filteredProducts: [],
       categories: [],
       currentCategoryId: null,
       sortOrder: 'asc',
       currentCategoryName: 'Главная',
       breadcrumbPath: [],
+      filters: {
+        inStock: true,
+        minPrice: 0,
+        maxPrice: 9999999,
+      },
     };
   },
 
@@ -57,13 +68,11 @@ export default {
   },
 
   computed: {
-    ...mapGetters('catalog', ['showCatalog']),
     ...mapGetters('user', ['isAuthenticated']),
   },
 
   methods: {
     ...mapActions('cart', ['loadCart', 'addToCart']),
-    ...mapActions('catalog', ['toggleCatalog']),
 
     navigateToHome() {
       this.setCategory(null, 'Главная');
@@ -78,7 +87,7 @@ export default {
       fetchFunc
         .then(response => {
           this.products = response;
-          this.sortProducts();
+          this.applyFilters();
         })
         .catch(error => console.error("Ошибка при загрузке продуктов:", error));
     },
@@ -94,15 +103,37 @@ export default {
         .catch(error => console.error("Ошибка при загрузке корзины:", error));
     },
 
+    applyFilters() {
+      let filtered = [...this.products];
+
+      if (this.filters.inStock) {
+        filtered = filtered.filter(product => product.stock > 0);
+      } else {
+        filtered = filtered.filter(product => product.stock === 0);
+      }
+
+      if (this.filters.minPrice !== null) {
+        filtered = filtered.filter(product => product.price >= this.filters.minPrice);
+      }
+
+      if (this.filters.maxPrice !== null) {
+        filtered = filtered.filter(product => product.price <= this.filters.maxPrice);
+      }
+
+      this.filteredProducts = filtered;
+      this.sortProducts();
+    },
+
     sortProducts() {
-      this.products.sort((a, b) => 
+      this.filteredProducts.sort((a, b) => 
         this.sortOrder === 'asc' ? a.price - b.price : b.price - a.price
       );
     },
 
-    onSortChange(newSortOrder) {
-      this.sortOrder = newSortOrder;
-      this.sortProducts();
+    onSortChange({ sortOrder, filters }) {
+      this.sortOrder = sortOrder;
+      this.filters = filters;
+      this.applyFilters();
     },
 
     onCategorySelected(categoryId) {
@@ -161,12 +192,6 @@ export default {
     this.fetchProducts();
     if (this.isAuthenticated) this.fetchCart();
   },
-
-  watch: {
-    $route() {
-      this.toggleCatalog();
-    }
-  }
 };
 </script>
 
@@ -204,6 +229,22 @@ export default {
   text-decoration: underline;
   color: #007bff;
 }
-</style>
 
-  
+.content {
+  display: flex;
+  align-items: flex-start;
+}
+
+.category-menu {
+
+  width: 250px;
+  flex-shrink: 0;
+}
+
+.product-list {
+  margin-top: 0;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+</style>

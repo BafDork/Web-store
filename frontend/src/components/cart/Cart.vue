@@ -101,6 +101,9 @@ export default {
   display: flex;
   gap: 20px;
   margin: 20px;
+  max-width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .cart-items {

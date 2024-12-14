@@ -1,16 +1,26 @@
 <template>
   <header>
-    <nav>
-      <h2 @click="toggleCatalogAction" class="catalog-link">Каталог</h2>
-      <div class="nav-right">
-        <router-link v-if="!isAuthenticated" to="/auth/sign-in" class="nav-item">Войти</router-link>
-        <router-link v-if="isAuthenticated" to="/cart" class="nav-item">Корзина ({{ cartCount }})</router-link>
-        <div v-if="isAuthenticated" class="user-info">
-          {{ userDisplayName }}
-          <Logout />
+    <div class="container">
+      <nav class="nav">
+        <div class="catalog-container">
+          <h2 @click="toggleCatalogAction" class="catalog-link">Каталог</h2>
+          <CategoryList
+            v-if="showCatalog"
+            :categories="categories"
+            @category-selected="onCategorySelected"
+            :active-category="currentCategoryId"
+          />
         </div>
-      </div>
-    </nav>
+        <div class="nav-right">
+          <router-link v-if="!isAuthenticated" to="/auth/sign-in" class="nav-item login">Войти</router-link>
+          <router-link v-if="isAuthenticated" to="/cart" class="nav-item cart">Корзина ({{ cartCount }})</router-link>
+          <div v-if="isAuthenticated" class="user-info">
+            {{ userDisplayName }}
+            <Logout />
+          </div>
+        </div>
+      </nav>
+    </div>
   </header>
 </template>
 
@@ -34,12 +44,8 @@ export default {
   },
 
   methods: {
-    ...mapActions('catalog', ['toggleCatalog']),
-    
     toggleCatalogAction() {
-      if (this.$route.path === '/') {
-        this.toggleCatalog();
-      } else {
+      if (this.$route.path !== '/') {
         this.$router.push('/');
       }
     },
@@ -50,8 +56,27 @@ export default {
 <style scoped>
 header {
   border-bottom: 1px solid #ddd;
-  padding: 20px;
   background-color: #f8f9fa;
+  padding: 10px 0;
+}
+
+.container {
+  max-width: 1250px;
+  margin: 0 auto;
+  padding: 0;
+}
+
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.catalog-container {
+  display: flex;
+  align-items: center;
+  gap: 20px;
 }
 
 .catalog-link {
@@ -66,14 +91,13 @@ header {
   color: #e03636;
 }
 
-nav {
+.nav-right {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  gap: 20px;
 }
 
 .nav-item {
-  margin-right: 20px;
   text-decoration: none;
   color: #000;
   font-weight: normal;
@@ -85,10 +109,30 @@ nav {
   color: #007bff;
 }
 
-.nav-right {
-  display: flex;
-  align-items: center;
-  font-size: 1.1em;
+.login, .cart {
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.login {
+  background-color: #007bff;
+  color: #fff;
+  transition: background-color 0.3s ease;
+}
+
+.login:hover {
+  background-color: #0056b3;
+}
+
+.cart {
+  background-color: #28a745;
+  color: #fff;
+  transition: background-color 0.3s ease;
+}
+
+.cart:hover {
+  background-color: #218838;
 }
 
 .user-info {

@@ -1,6 +1,7 @@
 import axios from '@/plugins/axios';
 
 const API_URL = 'http://localhost:8080/api/product';
+const ADMIN_URL = 'http://localhost:8080/admin/product';
 
 class ProductService {
 
@@ -30,6 +31,26 @@ class ProductService {
       return response.data;
     } catch (error) {
       console.error(`Ошибка при получении продуктов для категории с ID ${categoryId}:`, error);
+      throw error;
+    }
+  }
+
+  static async addProduct(product) {
+    try {
+      const response = await axios.post(`${ADMIN_URL}/add`, product);
+      return response.data;
+    } catch (error) {
+      console.error('Ошибка при добавлении продукта:', error);
+      throw error;
+    }
+  }
+
+  static async deleteProduct(productId) {
+    try {
+      const response = await axios.delete(`${ADMIN_URL}/delete/${productId}`);
+      return response.data;
+    } catch (error) {
+      console.error('Ошибка при удалении продукта:', error);
       throw error;
     }
   }

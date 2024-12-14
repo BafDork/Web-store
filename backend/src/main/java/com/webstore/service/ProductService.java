@@ -1,5 +1,6 @@
 package com.webstore.service;
 
+import com.webstore.dto.request.ProductRequestDTO;
 import com.webstore.dto.response.ProductResponseDTO;
 import com.webstore.exceptions.ResourceNotFoundException;
 import com.webstore.model.Category;
@@ -8,6 +9,7 @@ import com.webstore.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -67,6 +69,39 @@ public class ProductService {
                 .stream()
                 .map(ProductResponseDTO::new)
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Добавляет новый продукт.
+     *
+     * @param productRequest запрос для создания продукта
+     * @return созданный продукт
+     */
+    public ProductResponseDTO addProduct(ProductRequestDTO productRequest) {
+        Product product = Product.builder()
+                .name(productRequest.getName())
+                .description(productRequest.getDescription())
+                .price(productRequest.getPrice())
+                .discountPrice(productRequest.getDiscountPrice())
+                .stock(productRequest.getStock())
+                .imageUrl(productRequest.getImageUrl())
+                .categories(new HashSet<>(categoryService.findCategoriesByIds(productRequest.getCategoryIds())))
+                .build();
+        product = productRepository.save(product);
+        return new ProductResponseDTO(product);
+    }
+
+    /**
+     * Удаляет продукт по ID.
+     *
+     * @param productId идентификатор продукта
+     * @throws ResourceNotFoundException если продукт не найден
+     */
+    public void deleteProduct(Long productId) {
+        if (!productRepository.existsById(productId)) {
+            throw new ResourceNotFoundException("Продукт с ID " + productId + " не найден");
+        }
+        productRepository.deleteById(productId);
     }
 
     /**

@@ -36,7 +36,7 @@
     methods: {
       async fetchCategories() {
         try {
-          this.categories = await CategoryService.getTopLevelCategories();
+          this.categories = await CategoryService.getAllCategories();
         } catch (error) {
           console.error('Ошибка при загрузке категорий', error);
         }

@@ -5,9 +5,12 @@ import com.webstore.dto.response.CategoryResponseDTO;
 import com.webstore.exceptions.ResourceNotFoundException;
 import com.webstore.model.Category;
 import com.webstore.repository.CategoryRepository;
+import com.webstore.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -18,6 +21,7 @@ import java.util.stream.Collectors;
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final ProductRepository productRepository;
 
     /**
      * Получает категорию по её ID.
@@ -32,13 +36,26 @@ public class CategoryService {
     }
 
     /**
-     * Получает все категории верхнего уровня (без родительской категории).
+     * Получает все категории.
+     *
+     * @return список DTO объектов для категорий
+     */
+    public List<CategoryResponseDTO> getAllCategories() {
+        List<Category> categories = categoryRepository.findAll();
+        return categories.stream()
+                .map(CategoryResponseDTO::new)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Получает все категории верхнего уровня (без родительской категории)
+     * вместе с их подкатегориями рекурсивно.
      *
      * @return список DTO объектов для категорий верхнего уровня
      */
     public List<CategoryResponseDTO> getTopLevelCategories() {
-        List<Category> categories = categoryRepository.findByParentIsNullOrderByNameAsc();
-        return categories.stream()
+        List<Category> topLevelCategories = categoryRepository.findByParentIsNullOrderByNameAsc();
+        return topLevelCategories.stream()
                 .map(CategoryResponseDTO::new)
                 .collect(Collectors.toList());
     }
@@ -85,5 +102,49 @@ public class CategoryService {
         category = categoryRepository.save(category);
 
         return new CategoryResponseDTO(category);
+    }
+
+    /**
+     * Получает список категорий по их ID.
+     * Если категория не найдена, выбрасывается исключение ResourceNotFoundException.
+     *
+     * @param categoryIds список ID категорий
+     * @return найденная категория
+     */
+    public List<Category> findCategoriesByIds(List<Long> categoryIds) {
+        if (categoryIds == null || categoryIds.isEmpty()) {
+            return Collections.emptyList();
+        }
+        List<Category> categories = categoryRepository.findAllById(categoryIds);
+
+        if (categories.size() != categoryIds.size()) {
+            throw new ResourceNotFoundException("Одна или несколько категорий не найдены: " + categoryIds);
+        }
+
+        return categories;
+    }
+
+    /**
+     * Удаляет категорию по её ID.
+     *
+     * @param categoryId идентификатор категории
+     * @throws ResourceNotFoundException если категория не найдена
+     * @throws IllegalStateException если есть связанные подкатегории или продукты
+     */
+    @Transactional
+    public void deleteCategoryById(Long categoryId) {
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new ResourceNotFoundException("Категория с ID " + categoryId + " не найдена"));
+
+        if (!category.getSubCategories().isEmpty()) {
+            throw new IllegalStateException("Невозможно удалить категорию с подкатегориями");
+        }
+
+        boolean hasProducts = productRepository.existsByCategoriesContaining(category);
+        if (hasProducts) {
+            throw new IllegalStateException("Невозможно удалить категорию, так как она связана с продуктами");
+        }
+
+        categoryRepository.delete(category);
     }
 }

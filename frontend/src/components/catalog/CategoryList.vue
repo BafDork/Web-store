@@ -1,30 +1,22 @@
 <template>
-    <div class="catalog-menu">
-      <ul>
-        <li 
-          v-for="category in categories" 
-          :key="category.id" 
-          @click="selectCategory(category.id)"
-          class="category-item"
-        >
-          <span :class="{ active: activeCategory === category.id }">{{ category.name }}</span>
-          <ul v-if="category.subCategories.length > 0" class="sub-category-list">
-            <li 
-              v-for="subCategory in category.subCategories" 
-              :key="subCategory.id" 
-              @click.stop="selectCategory(subCategory.id)"
-              class="sub-category-item"
-            >
-              <span :class="{ active: activeCategory === subCategory.id }">{{ subCategory.name }}</span>
-            </li>
-          </ul>
-        </li>
-      </ul>
-    </div>
+  <div class="catalog-menu">
+    <ul>
+      <CategoryNode 
+        v-for="category in categories" 
+        :key="category.id" 
+        :category="category" 
+        :activeCategory="activeCategory" 
+        @category-selected="selectCategory"
+      />
+    </ul>
+  </div>
 </template>
-  
+
 <script>
+import CategoryNode from './CategoryNode.vue';
+
 export default {
+  components: { CategoryNode },
   props: {
     categories: {
       type: Array,
@@ -50,6 +42,7 @@ export default {
   border: 1px solid #ddd;
   border-radius: 5px;
   max-width: 250px;
+  padding: 10px;
 }
 
 ul {
@@ -68,25 +61,8 @@ ul {
   padding-left: 20px;
 }
 
-.sub-category-list {
-  padding-left: 20px;
-}
-
-.sub-category-item {
-  cursor: pointer;
-  list-style: none;
-  padding: 8px 0;
-  transition: background-color 0.2s ease;
-}
-
-.sub-category-item:hover {
-  background-color: #f9f9f9;
-  padding-left: 20px;
-}
-
 .active {
   font-weight: bold;
   color: #007bff;
 }
 </style>
-

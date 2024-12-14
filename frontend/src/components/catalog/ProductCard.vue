@@ -1,43 +1,47 @@
 <template>
-  <router-link :to="`/product/${product.id}`" class="product-link">
-    <div class="product-card">
-      <img :src="product.imageUrl" alt="Product Image" class="product-image" />
+  <div class="product-card">
+      <div class="product-image-container">
+        <router-link :to="`/product/${product.id}`" class="product-link">
+          <img :src="product.imageUrl" alt="Product Image" class="product-image" />
+        </router-link>
+      </div>
       <div class="product-details">
-        <h2 class="product-name">{{ product.name }}</h2>
-        <p class="product-description">{{ product.description }}</p>
+        <router-link :to="`/product/${product.id}`" class="product-link">
+          <h2 class="product-name">{{ product.name }}</h2>
+          <p class="product-description">{{ product.description }}</p>
+        </router-link>  
       </div>
 
-      <div class="product-stock">
-        <span :class="getAvailabilityClass(product.stock)">
-          {{ getAvailabilityMessage(product.stock) }}
-        </span>
-      </div>
-
-      <div class="price-and-cart">
-        <div class="product-price">
-          <p v-if="isAuthenticated && product.discountPrice !== null">
-            <span class="original-price">{{ formatPrice(product.price) }}</span>
-            <span class="discounted-price">{{ formatPrice(product.discountPrice) }}</span>
-          </p>
-          <p v-else class="regular-price">{{ formatPrice(product.price) }}</p>
-        </div>
-
-        <button 
-          v-if="!isAuthenticated" 
-          @click="redirectToLogin"
-          class="btn btn-primary">
-          В корзину
-        </button>
-        <button 
-          v-else 
-          :disabled="product.stock < 1 || isInCart" 
-          @click="addToCartAction"
-          class="btn btn-primary">
-          {{ isInCart ? "Уже в корзине" : "В корзину" }}
-        </button>
-      </div>
+    <div class="product-stock">
+      <span :class="getAvailabilityClass(product.stock)">
+        {{ getAvailabilityMessage(product.stock) }}
+      </span>
     </div>
-  </router-link>
+
+    <div class="price-and-cart">
+      <div class="product-price">
+        <div v-if="isAuthenticated && product.discountPrice !== null">
+          <p class="original-price">{{ formatPrice(product.price) }}</p>
+          <p class="discounted-price">{{ formatPrice(product.discountPrice) }}</p>
+        </div>
+        <div v-else class="regular-price">{{ formatPrice(product.price) }}</div>
+      </div>
+
+      <button 
+        v-if="!isAuthenticated" 
+        @click="redirectToLogin"
+        class="btn btn-primary">
+        В корзину
+      </button>
+      <button 
+        v-else 
+        :disabled="product.stock < 1 || isInCart" 
+        @click="addToCartAction"
+        class="btn btn-primary">
+        {{ isInCart ? "Уже в корзине" : "В корзину" }}
+      </button>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -101,7 +105,7 @@ export default {
   border: 1px solid #ddd;
   border-radius: 5px;
   padding: 16px;
-  margin: 10px;
+  margin-bottom: 16px;
   box-sizing: border-box;
   box-shadow: 10px 5px 5px rgb(199, 197, 197);
 }
@@ -111,7 +115,6 @@ export default {
   height: 150px;
   object-fit: scale-down;
   margin-right: 20px;
-  width: 15%;
 }
 
 .product-details {
@@ -165,6 +168,7 @@ export default {
 .discounted-price {
   font-size: 1.2em;
   color: #e74c3c;
+  margin-top: 5px;
 }
 
 button {
