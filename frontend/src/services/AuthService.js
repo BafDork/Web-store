@@ -1,4 +1,5 @@
 import axios from '@/plugins/axios';
+import { jwtDecode } from 'jwt-decode';
 
 const API_URL = 'http://localhost:8080/auth';
 
@@ -38,6 +39,20 @@ class AuthService {
 
   setToken(token) {
     localStorage.setItem('token', token);
+  }
+
+  getRole() {
+    const token = this.getToken();
+    if (token) {
+      try {
+        const decodedToken = jwtDecode(token);
+        return decodedToken.role || "ROLE_USER";
+      } catch (error) {
+        console.error('Ошибка декодирования токена:', error);
+        return "ROLE_USER";
+      }
+    }
+    return "ROLE_USER";
   }
 }
 

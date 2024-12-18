@@ -84,6 +84,14 @@ CREATE TABLE product_reviews (
     FOREIGN KEY (product_id) REFERENCES products (id) ON DELETE CASCADE
 );
 
+-- Создание таблицы для фотографий отзывов
+CREATE TABLE review_photos (
+    id SERIAL PRIMARY KEY,
+    review_id INT NOT NULL,
+    photo_url TEXT NOT NULL,
+    FOREIGN KEY (review_id) REFERENCES product_reviews(id) ON DELETE CASCADE
+);
+
 -- Вставка начальных данных в таблицу пользователей
 INSERT INTO users (first_name, last_name, email, password, role) VALUES
 ('Admin', 'Adminov', 'admin@mail.com', 'adminpass', 'ROLE_ADMIN'),

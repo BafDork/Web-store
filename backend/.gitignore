@@ -1,5 +1,6 @@
 jwt-secret-key.txt
 target/
+uploads/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/

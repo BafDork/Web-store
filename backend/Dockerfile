@@ -19,6 +19,9 @@ FROM openjdk:17-jdk-slim
 # Установить рабочую директорию в новом контейнере
 WORKDIR /app
 
+# Создать папку для загружаемых файлов
+RUN mkdir -p /var/www/uploads
+
 # Скопировать собранный JAR-файл из стадии сборки
 COPY --from=builder /app/target/web-store-1.0-SNAPSHOT.jar ./web-store-1.0-SNAPSHOT.jar
 

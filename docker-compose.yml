@@ -6,6 +6,8 @@ services:
     container_name: web-store-backend
     ports:
       - "8080:8080"
+    volumes:
+      - ./backend/uploads:/var/www/uploads
     depends_on:
       - db
 
@@ -17,7 +19,7 @@ services:
     ports:
       - "80:80"
     volumes:
-      - ./frontend/src/assets/images:/usr/src/app/images 
+      - ./frontend/src/assets/images:/usr/src/app/images
     depends_on:
       - backend
 
