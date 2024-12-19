@@ -54,6 +54,16 @@ class ProductService {
       throw error;
     }
   }
+
+  static async updateProduct(productId, product) {
+    try {
+      const response = await axios.put(`${ADMIN_URL}/update/${productId}`, product);
+      return response.data;
+    } catch (error) {
+      console.error(`Ошибка при обновлении продукта с ID ${productId}:`, error);
+      throw error;
+    }
+  }
 }
 
 export default ProductService;

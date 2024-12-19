@@ -85,6 +85,7 @@ public class ProductService {
                 .discountPrice(productRequest.getDiscountPrice())
                 .stock(productRequest.getStock())
                 .imageUrl(productRequest.getImageUrl())
+                .features(productRequest.getFeatures())
                 .categories(new HashSet<>(categoryService.findCategoriesByIds(productRequest.getCategoryIds())))
                 .build();
         product = productRepository.save(product);
@@ -111,5 +112,27 @@ public class ProductService {
      */
     public void saveProduct(Product product) {
         productRepository.save(product);
+    }
+
+    /**
+     * Обновляет продукт по ID.
+     *
+     * @param productId идентификатор продукта
+     * @param productRequest запрос для обновления продукта
+     * @return обновленный продукт
+     */
+    public ProductResponseDTO updateProduct(Long productId, ProductRequestDTO productRequest) {
+        Product existingProduct = getProductById(productId);
+        existingProduct.setName(productRequest.getName());
+        existingProduct.setDescription(productRequest.getDescription());
+        existingProduct.setPrice(productRequest.getPrice());
+        existingProduct.setDiscountPrice(productRequest.getDiscountPrice());
+        existingProduct.setStock(productRequest.getStock());
+        existingProduct.setImageUrl(productRequest.getImageUrl());
+        existingProduct.setFeatures(productRequest.getFeatures());
+        existingProduct.setCategories(new HashSet<>(categoryService.findCategoriesByIds(productRequest.getCategoryIds())));
+
+        productRepository.save(existingProduct);
+        return new ProductResponseDTO(existingProduct);
     }
 }

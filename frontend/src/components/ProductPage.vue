@@ -167,7 +167,7 @@ import ReviewService from '@/services/ReviewService';
 import AuthService from '@/services/AuthService';
 
 export default {
-  props: ['id'],
+  props: ['productId'],
 
   data() {
     return {
@@ -189,7 +189,7 @@ export default {
     ...mapGetters('user', ['isAuthenticated']),
 
     isInCart() {
-      return this.isProductInCart(this.id);
+      return this.isProductInCart(this.productId);
     },
 
     isAdmin() {
@@ -222,7 +222,7 @@ export default {
 
     async loadProduct() {
       try {
-        this.product = await ProductService.getProductById(this.id);
+        this.product = await ProductService.getProductById(this.productId);
       } catch (error) {
         console.error('Не удалось загрузить продукт:', error);
       }
@@ -230,7 +230,7 @@ export default {
 
     async loadReviews() {
       try {
-        const reviews = await ReviewService.getReviews(this.id);
+        const reviews = await ReviewService.getReviews(this.productId);
         
         for (let review of reviews) {
           if (review.photos && review.photos.length > 0) {

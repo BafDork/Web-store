@@ -14,6 +14,7 @@ public class ProductResponseDTO {
     private Double discountPrice;
     private int stock;
     private String imageUrl;
+    private String features;
 
     public ProductResponseDTO(Product product) {
         this.id = product.getId();
@@ -23,6 +24,7 @@ public class ProductResponseDTO {
         this.discountPrice = product.getDiscountPrice();
         this.stock = product.getStock();
         this.imageUrl = product.getImageUrl();
+        this.features = product.getFeatures();
     }
 }
 

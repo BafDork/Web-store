@@ -5,6 +5,16 @@ const ADMIN_URL = 'http://localhost:8080/admin/category';
 
 class CategoryService {
 
+  static async getCategoryById(categoryId) {
+    try {
+      const response = await axios.get(`${API_URL}/${categoryId}`);
+      return response.data;
+    } catch (error) {
+      console.error(`Ошибка при получении категории с ID ${categoryId}:`, error);
+      throw error;
+    }
+  }
+
   static async getAllCategories() {
     try {
       const response = await axios.get(`${API_URL}/all`);
@@ -41,6 +51,16 @@ class CategoryService {
       return response.data;
     } catch (error) {
       console.error('Ошибка при удалении категории:', error);
+      throw error;
+    }
+  }
+
+  static async updateCategory(categoryId, category) {
+    try {
+      const response = await axios.put(`${ADMIN_URL}/update/${categoryId}`, category);
+      return response.data;
+    } catch (error) {
+      console.error(`Ошибка при обновлении категории с ID ${categoryId}:`, error);
       throw error;
     }
   }

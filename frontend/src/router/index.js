@@ -14,6 +14,8 @@ const routes = [
   { path: '/admin/add-product', name: 'add-product', component: () => import('@/components/admin/AddProductForm.vue'), meta: { requiresAuth: true, requiresAdmin: true } },
   { path: '/admin/delete-product', name: 'delete-product', component: () => import('@/components/admin/DeleteProductForm.vue'), meta: { requiresAuth: true, requiresAdmin: true } },
   { path: '/admin/delete-category', name: 'delete-category', component: () => import('@/components/admin/DeleteCategoryForm.vue'), meta: { requiresAuth: true, requiresAdmin: true } },
+  { path: '/admin/update-product/:productId', name: 'update-product', component: () => import('@/components/admin/UpdateProductForm.vue'), meta: { requiresAuth: true, requiresAdmin: true }, props: true },
+  { path: '/admin/update-category/:categoryId', name: 'update-category', component: () => import('@/components/admin/UpdateCategoryForm.vue'), meta: { requiresAuth: true, requiresAdmin: true }, props: true },
 ];
 
 const router = createRouter({

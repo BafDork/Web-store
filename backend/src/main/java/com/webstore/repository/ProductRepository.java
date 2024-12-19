@@ -8,6 +8,13 @@ import java.util.List;
 import java.util.Set;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
+
+    /**
+     * Поиск продуктов по категориям.
+     *
+     * @param categories список категорий
+     * @return список продуктов
+     */
     List<Product> findByCategoriesIn(Set<Category> categories);
 
     /**

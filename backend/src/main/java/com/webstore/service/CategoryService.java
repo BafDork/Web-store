@@ -35,6 +35,18 @@ public class CategoryService {
                 .orElseThrow(() -> new ResourceNotFoundException("Категория не найдена с ID: " + categoryId));
     }
 
+
+    /**
+     * Получает категорию по её ID и преобразует её в DTO объект.
+     *
+     * @param categoryId ID категории
+     * @return DTO объект для категории
+     */
+    public CategoryResponseDTO findCategoryById(Long categoryId) {
+        Category category = getCategoryById(categoryId);
+        return new CategoryResponseDTO(category);
+    }
+
     /**
      * Получает все категории.
      *
@@ -146,5 +158,23 @@ public class CategoryService {
         }
 
         categoryRepository.delete(category);
+    }
+
+    /**
+     * Обновляет категорию по её ID.
+     *
+     * @param categoryId идентификатор категории
+     * @param categoryRequest запрос для обновления категории
+     * @return обновленная категория
+     */
+    public CategoryResponseDTO updateCategory(Long categoryId, CategoryRequestDTO categoryRequest) {
+        Category existingCategory = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new ResourceNotFoundException("Категория не найдена с ID: " + categoryId));
+
+        existingCategory.setName(categoryRequest.getName());
+        existingCategory.setParent(categoryRequest.getParentId() != null ? categoryRepository.findById(categoryRequest.getParentId()).orElse(null) : null);
+
+        categoryRepository.save(existingCategory);
+        return new CategoryResponseDTO(existingCategory);
     }
 }

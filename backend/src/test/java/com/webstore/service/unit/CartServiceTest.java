@@ -54,7 +54,7 @@ class CartServiceTest {
         user = new User(1L, "Test", "User", "test@example.com",
                 "password", Role.ROLE_USER);
         product = new Product(1L, "Product1", "Description", 100.0,
-                null, 1, "Image", Collections.emptySet());
+                null, 1, "Image", "", Collections.emptySet());
         cart = new Cart();
         cart.setUser(user);
     }

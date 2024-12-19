@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,6 +23,12 @@ import java.util.List;
 public class CategoryController {
 
     private final CategoryService categoryService;
+
+    @GetMapping("/api/category/{categoryId}")
+    public ResponseEntity<CategoryResponseDTO> getCategoryById(@PathVariable Long categoryId) {
+        CategoryResponseDTO category = categoryService.findCategoryById(categoryId);
+        return ResponseEntity.ok(category);
+    }
 
     @GetMapping("/api/category/top-level")
     public ResponseEntity<List<CategoryResponseDTO>> getTopLevelCategories() {
@@ -53,5 +60,12 @@ public class CategoryController {
         } catch (ResourceNotFoundException ex) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
+    }
+
+    @PutMapping("/admin/category/update/{categoryId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<CategoryResponseDTO> updateCategory(@PathVariable Long categoryId, @RequestBody CategoryRequestDTO categoryRequest) {
+        CategoryResponseDTO updatedCategory = categoryService.updateCategory(categoryId, categoryRequest);
+        return ResponseEntity.ok(updatedCategory);
     }
 }

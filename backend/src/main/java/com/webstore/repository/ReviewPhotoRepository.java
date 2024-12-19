@@ -8,5 +8,12 @@ import java.util.Optional;
 
 @Repository
 public interface ReviewPhotoRepository extends JpaRepository<ReviewPhoto, Long> {
+
+    /**
+     * Поиск фотографии отзыва по ID отзыва.
+     *
+     * @param reviewId ID отзыва
+     * @return объект фотографии отзыва
+     */
     Optional<ReviewPhoto> findByReviewId(Long reviewId);
 }

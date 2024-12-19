@@ -50,6 +50,9 @@ public class Product {
     @Column(name = "image_url")
     private String imageUrl;
 
+    @Column(name = "features", columnDefinition = "TEXT")
+    private String features;
+
     @ManyToMany
     @JoinTable(
             name = "product_categories",

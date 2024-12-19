@@ -23,7 +23,8 @@ CREATE TABLE products (
     price DECIMAL(10, 2) NOT NULL,
     discount_price DECIMAL(10, 2),
     stock INT NOT NULL,
-    image_url VARCHAR(255)
+    image_url VARCHAR(255),
+    features TEXT
 );
 
 -- Создание таблицы для корзин

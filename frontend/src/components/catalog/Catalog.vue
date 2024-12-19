@@ -112,6 +112,14 @@ export default {
         filtered = filtered.filter(product => product.stock === 0);
       }
 
+      if (this.filters.bigScreen) {
+        filtered = filtered.filter(product => product.features && product.features.includes('Большая диагональ'));
+      }
+
+      if (this.filters.chargerIncluded) {
+        filtered = filtered.filter(product => product.features && product.features.includes('Зарядка в комплекте'));
+      }
+
       if (this.filters.minPrice !== null) {
         filtered = filtered.filter(product => product.price >= this.filters.minPrice);
       }
