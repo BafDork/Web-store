@@ -189,7 +189,7 @@ export default {
     ...mapGetters('user', ['isAuthenticated']),
 
     isInCart() {
-      return this.isProductInCart(this.productId);
+      return this.isProductInCart(Number(this.productId));
     },
 
     isAdmin() {

@@ -13,7 +13,7 @@
 
     <div class="category-and-controls">
       <div class="current-category">
-        <strong>{{ currentCategoryName }}</strong> ({{ products.length }} товаров)
+        <strong>{{ currentCategoryName }}</strong> ({{ products.length }})
       </div>
       <div class="sorting-control">
         <Controls ref="controls" @sort-change="onSortChange" />

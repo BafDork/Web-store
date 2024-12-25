@@ -1,7 +1,16 @@
 <template>
-    <div class="container mt-5">
-      <h2 class="mb-4">Редактировать продукт</h2>
-      <form @submit.prevent="updateProduct">
+  <div class="container mt-5">
+    <h2 class="mb-4">Редактировать продукт</h2>
+    <form @submit.prevent="updateProduct">
+      <div class="mb-3">
+        <label for="select-product" class="form-label">Выберите продукт для редактирования</label>
+        <select id="select-product" v-model="selectedProductId" @change="onProductChange" class="form-select" required>
+          <option disabled value="">-- Выберите продукт --</option>
+          <option v-for="prod in products" :key="prod.id" :value="prod.id">{{ prod.name }}</option>
+        </select>
+      </div>
+
+      <div v-if="product">
         <div class="mb-3">
           <label for="product-name" class="form-label">Название продукта</label>
           <input type="text" id="product-name" v-model="product.name" class="form-control" required />
@@ -39,83 +48,86 @@
           </select>
         </div>
         <button type="submit" class="btn btn-primary">Обновить продукт</button>
-      </form>
-    </div>
-  </template>
-  
-  <script>
-  import CategoryService from '@/services/CategoryService';
-  import ProductService from '@/services/ProductService';
-  
-  export default {
-    props: ['productId'],
+      </div>
+    </form>
+  </div>
+</template>
 
-    data() {
-      return {
-        product: {
-          name: '',
-          description: '',
-          price: 0,
-          discountPrice: null,
-          stock: 0,
-          imageUrl: '',
-          features: '',
-          categoryIds: [],
-        },
-        categories: [],
-      };
+<script>
+import CategoryService from '@/services/CategoryService';
+import ProductService from '@/services/ProductService';
+
+export default {
+  data() {
+    return {
+      selectedProductId: '',
+      product: null,
+      products: [],
+      categories: [],
+    };
+  },
+  created() {
+    this.fetchProducts();
+    this.fetchCategories();
+  },
+  methods: {
+    async fetchProducts() {
+      try {
+        this.products = await ProductService.getAllProducts();
+      } catch (error) {
+        console.error('Ошибка при загрузке продуктов', error);
+      }
     },
-    created() {
-      this.fetchCategories();
-      this.fetchProduct();
+    async fetchCategories() {
+      try {
+        this.categories = await CategoryService.getAllCategories();
+      } catch (error) {
+        console.error('Ошибка при загрузке категорий', error);
+      }
     },
-    methods: {
-      async fetchCategories() {
-        try {
-          this.categories = await CategoryService.getAllCategories();
-        } catch (error) {
-          console.error('Ошибка при загрузке категорий', error);
-        }
-      },
-      async fetchProduct() {
-        try {
-          const product = await ProductService.getProductById(this.productId);
-          this.product = { ...product };
-        } catch (error) {
-          console.error('Ошибка при загрузке товара', error);
-        }
-      },
-      async updateProduct() {
-        try {
-          await ProductService.updateProduct(this.productId, this.product);
-          alert('Продукт обновлен');
-        } catch (error) {
-          console.error('Ошибка при обновлении продукта', error);
-          alert('Не удалось обновить продукт.');
-        }
-      },
+    async onProductChange() {
+      if (!this.selectedProductId) {
+        this.product = null;
+        return;
+      }
+      try {
+        const product = await ProductService.getProductById(this.selectedProductId);
+        this.product = { ...product };
+      } catch (error) {
+        console.error('Ошибка при загрузке продукта', error);
+        alert('Не удалось загрузить продукт');
+      }
     },
-  };
-  </script>
-  
-  <style scoped>
-  .container {
-    max-width: 600px;
-  }
-  
-  h2 {
-    text-align: center;
-  }
-  
-  form {
-    background-color: #f9f9f9;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  button {
-    width: 100%;
-  }
-  </style>
-  
+    async updateProduct() {
+      try {
+        await ProductService.updateProduct(this.product.id, this.product);
+        alert('Продукт обновлен');
+      } catch (error) {
+        console.error('Ошибка при обновлении продукта', error);
+        alert('Не удалось обновить продукт.');
+      }
+    },
+  },
+};
+</script>
+
+<style scoped>
+.container {
+  max-width: 600px;
+}
+
+h2 {
+  text-align: center;
+}
+
+form {
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+button {
+  width: 100%;
+}
+</style>

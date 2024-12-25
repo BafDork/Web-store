@@ -18,6 +18,13 @@
             {{ userDisplayName }}
             <Logout />
           </div>
+          <router-link
+            v-if="isAuthenticated && isAdmin()"
+            to="/admin"
+            class="nav-item admin-panel"
+          >
+            Админская панель
+          </router-link>
         </div>
       </nav>
     </div>
@@ -27,6 +34,7 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
 import Logout from '@/components/authentication/Logout.vue';
+import AuthService from '@/services/AuthService';
 
 export default {
   components: {
@@ -44,10 +52,14 @@ export default {
   },
 
   methods: {
+    ...mapActions('user', ['fetchUser']),
     toggleCatalogAction() {
       if (this.$route.path !== '/') {
         this.$router.push('/');
       }
+    },
+    isAdmin() {
+      return AuthService.getRole() === 'ROLE_ADMIN';
     },
   },
 };
@@ -109,7 +121,7 @@ header {
   color: #007bff;
 }
 
-.login, .cart {
+.login, .cart, .admin-panel {
   padding: 8px 12px;
   border-radius: 4px;
   font-weight: 600;
@@ -118,7 +130,6 @@ header {
 .login {
   background-color: #007bff;
   color: #fff;
-  transition: background-color 0.3s ease;
 }
 
 .login:hover {
@@ -128,11 +139,19 @@ header {
 .cart {
   background-color: #28a745;
   color: #fff;
-  transition: background-color 0.3s ease;
 }
 
 .cart:hover {
   background-color: #218838;
+}
+
+.admin-panel {
+  background-color: #6c757d;
+  color: #fff;
+}
+
+.admin-panel:hover {
+  background-color: #5a6268;
 }
 
 .user-info {
@@ -140,18 +159,5 @@ header {
   display: flex;
   align-items: center;
   gap: 10px;
-}
-
-.user-info button {
-  margin-left: 10px;
-  background: none;
-  border: none;
-  color: #f54242;
-  cursor: pointer;
-  font-size: 1.1em;
-}
-
-.user-info button:hover {
-  text-decoration: underline;
 }
 </style>
